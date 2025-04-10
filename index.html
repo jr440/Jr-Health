@@ -79,6 +79,12 @@
       display: inline-block;
     }
 
+    /* Dot colors */
+    .dot-1 { background-color: #ff4444; }
+    .dot-2 { background-color: #ff8c42; }
+    .dot-3 { background-color: #ffd242; }
+    .dot-empty { background-color: #444; }
+
     /* Charts */
     .chart-container {
       height: 200px;
@@ -290,7 +296,7 @@
           <div class="mood-item">😁<br>Excellent</div>
         </div>
 
-        <h3>Current Resources</h3>
+        <h3>Mental Resources</h3>
         <div class="rating-container">
           <span class="rating-label">Emotional Regulation:</span>
           <div class="rating-dots">
@@ -301,13 +307,52 @@
             <span class="dot" style="background-color: #444;"></span>
           </div>
         </div>
-
+        <div class="rating-container">
+          <span class="rating-label">Cognitive Clarity:</span>
+          <div class="rating-dots">
+            <span class="dot" style="background-color: #ff4444;"></span>
+            <span class="dot" style="background-color: #ff8c42;"></span>
+            <span class="dot" style="background-color: #ffd242;"></span>
+            <span class="dot" style="background-color: #444;"></span>
+            <span class="dot" style="background-color: #444;"></span>
+          </div>
+        </div>
+        <div class="rating-container">
+          <span class="rating-label">Stress Level:</span>
+          <div class="rating-dots">
+            <span class="dot" style="background-color: #ff4444;"></span>
+            <span class="dot" style="background-color: #444;"></span>
+            <span class="dot" style="background-color: #444;"></span>
+            <span class="dot" style="background-color: #444;"></span>
+            <span class="dot" style="background-color: #444;"></span>
+          </div>
+        </div>
         <div class="rating-container">
           <span class="rating-label">Focus/Attention:</span>
           <div class="rating-dots">
             <span class="dot" style="background-color: #ff4444;"></span>
             <span class="dot" style="background-color: #ff8c42;"></span>
-            <span class="dot" style="background-color: #ffd242;"></span>
+            <span class="dot" style="background-color: #444;"></span>
+            <span class="dot" style="background-color: #444;"></span>
+            <span class="dot" style="background-color: #444;"></span>
+          </div>
+        </div>
+        <div class="rating-container">
+          <span class="rating-label">Working Memory:</span>
+          <div class="rating-dots">
+            <span class="dot" style="background-color: #ff4444;"></span>
+            <span class="dot" style="background-color: #ff8c42;"></span>
+            <span class="dot" style="background-color: #444;"></span>
+            <span class="dot" style="background-color: #444;"></span>
+            <span class="dot" style="background-color: #444;"></span>
+          </div>
+        </div>
+        <div class="rating-container">
+          <span class="rating-label">Task Initiation:</span>
+          <div class="rating-dots">
+            <span class="dot" style="background-color: #ff4444;"></span>
+            <span class="dot" style="background-color: #ff8c42;"></span>
+            <span class="dot" style="background-color: #444;"></span>
             <span class="dot" style="background-color: #444;"></span>
             <span class="dot" style="background-color: #444;"></span>
           </div>
@@ -334,6 +379,37 @@
           <div class="need-item active">Time Pressure</div>
           <div class="need-item">Sensory Overload</div>
         </div>
+      </div>
+
+      <!-- Medication Tracker Panel -->
+      <div class="panel">
+        <h2>💊 Medication Tracker (BPD/ADHD/T1D)</h2>
+        <table>
+          <tr>
+            <th>Medication</th>
+            <th>AM</th>
+            <th>PM</th>
+            <th>Notes</th>
+          </tr>
+          <tr>
+            <td>Hotdog</td>
+            <td>✅</td>
+            <td>❌</td>
+            <td>Take before 9am</td>
+          </tr>
+          <tr>
+            <td>Mood Stabilizer</td>
+            <td>✅</td>
+            <td>✅</td>
+            <td>Monitor hydration</td>
+          </tr>
+          <tr>
+            <td>Insulin</td>
+            <td>✅</td>
+            <td>✅</td>
+            <td>With meals</td>
+          </tr>
+        </table>
       </div>
 
       <!-- Capacity Summary Panel -->
