@@ -1,1 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Health Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      color: white;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Navigation */
+    .nav-bar {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 15px 30px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-link {
+      color: white;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+
+    .nav-link.active {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .nav-link:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      background: linear-gradient(45deg, #4CAF50, #2196F3);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .datetime {
+      font-size: 1.2em;
+      opacity: 0.8;
+    }
+
+    /* Grid Layout */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: auto auto auto;
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    /* Panel Styles */
+    .panel {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 25px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .panel:hover {
+      transform: translateY(-5px);
+    }
+
+    .panel h2 {
+      margin-bottom: 20px;
+      font-size: 1.4em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Capacity Overview - Top Left */
+    .capacity-overview {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .capacity-rings {
+      display: flex;
+      justify-content: space-around;
+      margin: 20px 0;
+    }
+
+    .capacity-ring {
+      position: relative;
+      width: 80px;
+      height: 80px;
+    }
+
+    .ring-bg {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: conic-gradient(#4CAF50 0deg, #4CAF50 252deg, rgba(255,255,255,0.1) 252deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .ring-label {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 0.9em;
+    }
+
+    /* Current Status - Top Center */
+    .current-status {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin: 15px 0;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+
+    .status-light {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .status-good { background: #4CAF50; }
+    .status-warning { background: #FFC107; }
+    .status-critical { background: #F44336; }
+
+    /* Quick Actions - Top Right */
+    .quick-actions {
+      grid-column: 3;
+      grid-row: 1;
+    }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .action-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      padding: 15px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.9em;
+    }
+
+    .action-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.05);
+    }
+
+    /* Mental State - Middle Left */
+    .mental-state {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    .mood-selector {
+      display: flex;
+      justify-content: space-between;
+      margin: 20px 0;
+    }
+
+    .mood-item {
+      text-align: center;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+      flex: 1;
+      margin: 0 5px;
+    }
+
+    .mood-item.active {
+      background: rgba(76, 175, 80, 0.3);
+      transform: scale(1.1);
+    }
+
+    .rating-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 10px 0;
+    }
+
+    .rating-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .dot.active { background: #4CAF50; }
+
+    /* Health Metrics - Middle Center */
+    .health-metrics {
+      grid-column: 2;
+      grid-row: 2;
+    }
+
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 15px 0;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+    }
+
+    .metric-value {
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+
+    /* Support Needs - Middle Right */
+    .support-needs {
+      grid-column: 3;
+      grid-row: 2;
+    }
+
+    .need-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .need-tag {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 0.9em;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .need-tag.active {
+      background: #4CAF50;
+    }
+
+    /* Medication & Schedule - Bottom Span */
+    .medication-schedule {
+      grid-column: 1 / -1;
+      grid-row: 3;
+    }
+
+    .med-schedule-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+
+    .med-list {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 15px;
+    }
+
+    .med-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 15px 0;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+    }
+
+    .med-status {
+      display: flex;
+      gap: 10px;
+    }
+
+    .status-check {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .status-check.taken { background: #4CAF50; }
+    .status-check.missed { background: #F44336; }
+    .status-check.pending { background: rgba(255, 255, 255, 0.2); }
+
+    /* Emergency Panel */
+    .emergency-panel {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(244, 67, 54, 0.9);
+      padding: 15px;
+      border-radius: 10px;
+      backdrop-filter: blur(10px);
+    }
+
+    .emergency-btn {
+      background: white;
+      color: #F44336;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .capacity-overview { grid-column: 1; grid-row: 1; }
+      .current-status { grid-column: 2; grid-row: 1; }
+      .quick-actions { grid-column: 1; grid-row: 2; }
+      .mental-state { grid-column: 2; grid-row: 2; }
+      .health-metrics { grid-column: 1; grid-row: 3; }
+      .support-needs { grid-column: 2; grid-row: 3; }
+      .medication-schedule { grid-column: 1 / -1; grid-row: 4; }
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .panel { grid-column: 1 !important; }
+      .med-schedule-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Navigation -->
+    <nav class="nav-bar">
+      <div class="nav-links">
+        <a href="#" class="nav-link active">📊 Daily Dashboard</a>
+        <a href="analytics.html" class="nav-link">📈 Analytics & Patterns</a>
+      </div>
+      <div class="datetime" id="currentDateTime"></div>
+    </nav>
+
+    <!-- Header -->
+    <div class="header">
+      <h1>Daily Health Dashboard</h1>
+      <div class="datetime">Real-time Status & Management</div>
+    </div>
+
+    <!-- Main Dashboard Grid -->
+    <div class="dashboard-grid">
+      <!-- Capacity Overview -->
+      <div class="panel capacity-overview">
+        <h2>🔋 Current Capacity</h2>
+        <div class="capacity-rings">
+          <div class="capacity-ring">
+            <div class="ring-bg" style="background: conic-gradient(#4CAF50 0deg, #4CAF50 216deg, rgba(255,255,255,0.1) 216deg);">
+              60%
+            </div>
+            <div class="ring-label">Physical</div>
+          </div>
+          <div class="capacity-ring">
+            <div class="ring-bg" style="background: conic-gradient(#FFC107 0deg, #FFC107 144deg, rgba(255,255,255,0.1) 144deg);">
+              40%
+            </div>
+            <div class="ring-label">Mental</div>
+          </div>
+          <div class="capacity-ring">
+            <div class="ring-bg" style="background: conic-gradient(#F44336 0deg, #F44336 72deg, rgba(255,255,255,0.1) 72deg);">
+              20%
+            </div>
+            <div class="ring-label">Social</div>
+          </div>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+          <div style="font-size: 1.5em; font-weight: bold;">Overall: 40%</div>
+          <div style="opacity: 0.8;">Reduced Capacity Day</div>
+        </div>
+      </div>
+
+      <!-- Current Status -->
+      <div class="panel current-status">
+        <h2>🚦 Current Status</h2>
+        <div class="status-indicator">
+          <div class="status-light status-warning"></div>
+          <div>
+            <div><strong>Mental State:</strong> Overwhelmed</div>
+            <div style="opacity: 0.8;">High stress, low focus</div>
+          </div>
+        </div>
+        <div class="status-indicator">
+          <div class="status-light status-good"></div>
+          <div>
+            <div><strong>Physical Health:</strong> Stable</div>
+            <div style="opacity: 0.8;">Glucose in range</div>
+          </div>
+        </div>
+        <div class="status-indicator">
+          <div class="status-light status-critical"></div>
+          <div>
+            <div><strong>Communication:</strong> Limited</div>
+            <div style="opacity: 0.8;">Non-verbal preferred</div>
+          </div>
+        </div>
+        <div class="status-indicator">
+          <div class="status-light status-warning"></div>
+          <div>
+            <div><strong>Sensory:</strong> Overloaded</div>
+            <div style="opacity: 0.8;">Noise sensitivity high</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="panel quick-actions">
+        <h2>⚡ Quick Actions</h2>
+        <div class="action-grid">
+          <button class="action-btn">📝 Log Symptom</button>
+          <button class="action-btn">💊 Med Check</button>
+          <button class="action-btn">🎯 Set Boundary</button>
+          <button class="action-btn">📞 Call Support</button>
+          <button class="action-btn">🧘 Breathing</button>
+          <button class="action-btn">🚶 Take Break</button>
+          <button class="action-btn">🎵 Play Music</button>
+          <button class="action-btn">📱 Emergency</button>
+        </div>
+      </div>
+
+      <!-- Mental State -->
+      <div class="panel mental-state">
+        <h2>🧠 Mental State</h2>
+        <div class="mood-selector">
+          <div class="mood-item">😞<br><small>Very Low</small></div>
+          <div class="mood-item active">😰<br><small>Stressed</small></div>
+          <div class="mood-item">😐<br><small>Neutral</small></div>
+          <div class="mood-item">😊<br><small>Good</small></div>
+          <div class="mood-item">😁<br><small>Great</small></div>
+        </div>
+        
+        <div class="rating-item">
+          <span>Focus:</span>
+          <div class="rating-dots">
+            <div class="dot active"></div>
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+        </div>
+        <div class="rating-item">
+          <span>Emotional Regulation:</span>
+          <div class="rating-dots">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+        </div>
+        <div class="rating-item">
+          <span>Task Initiation:</span>
+          <div class="rating-dots">
+            <div class="dot active"></div>
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Health Metrics -->
+      <div class="panel health-metrics">
+        <h2>🩺 Health Metrics</h2>
+        <div class="metric-row">
+          <span>Blood Glucose:</span>
+          <span class="metric-value" style="color: #4CAF50;">6.2 mmol/L</span>
+        </div>
+        <div class="metric-row">
+          <span>Sleep Quality:</span>
+          <span class="metric-value" style="color: #FFC107;">5.2 hrs</span>
+        </div>
+        <div class="metric-row">
+          <span>Hydration:</span>
+          <span class="metric-value" style="color: #F44336;">0.8L / 2.5L</span>
+        </div>
+        <div class="metric-row">
+          <span>Heart Rate:</span>
+          <span class="metric-value" style="color: #4CAF50;">72 bpm</span>
+        </div>
+        <div class="metric-row">
+          <span>Stress Level:</span>
+          <span class="metric-value" style="color: #F44336;">High</span>
+        </div>
+      </div>
+
+      <!-- Support Needs -->
+      <div class="panel support-needs">
+        <h2>🛠️ Support Needs</h2>
+        <div class="need-tags">
+          <div class="need-tag active">Verbal Prompts</div>
+          <div class="need-tag">Written Instructions</div>
+          <div class="need-tag active">Sensory Breaks</div>
+          <div class="need-tag active">Processing Time</div>
+          <div class="need-tag">Physical Support</div>
+          <div class="need-tag active">Emotional Support</div>
+        </div>
+        
+        <h3 style="margin: 20px 0 10px 0;">Current Triggers:</h3>
+        <div class="need-tags">
+          <div class="need-tag" style="background: #F44336;">Time Pressure</div>
+          <div class="need-tag" style="background: #F44336;">Sensory Overload</div>
+          <div class="need-tag" style="background: #FFC107;">Social Demands</div>
+        </div>
+      </div>
+
+      <!-- Medication & Schedule -->
+      <div class="panel medication-schedule">
+        <h2>💊 Medication & Daily Schedule</h2>
+        <div class="med-schedule-grid">
+          <div class="med-list">
+            <h3>Today's Medications</h3>
+            <div class="med-item">
+              <div>
+                <div><strong>ADHD Medication</strong></div>
+                <div style="opacity: 0.8;">Take before 9 AM</div>
+              </div>
+              <div class="med-status">
+                <div class="status-check taken">✓</div>
+                <div class="status-check pending">PM</div>
+              </div>
+            </div>
+            <div class="med-item">
+              <div>
+                <div><strong>Mood Stabilizer</strong></div>
+                <div style="opacity: 0.8;">With food</div>
+              </div>
+              <div class="med-status">
+                <div class="status-check taken">✓</div>
+                <div class="status-check missed">✗</div>
+              </div>
+            </div>
+            <div class="med-item">
+              <div>
+                <div><strong>Insulin</strong></div>
+                <div style="opacity: 0.8;">With meals</div>
+              </div>
+              <div class="med-status">
+                <div class="status-check taken">✓</div>
+                <div class="status-check taken">✓</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="med-list">
+            <h3>Today's Schedule</h3>
+            <div class="med-item">
+              <div>
+                <div><strong>Morning Routine</strong></div>
+                <div style="opacity: 0.8;">7:00 AM - Completed</div>
+              </div>
+              <div class="status-check taken">✓</div>
+            </div>
+            <div class="med-item">
+              <div>
+                <div><strong>Work Block</strong></div>
+                <div style="opacity: 0.8;">9:00 AM - In Progress</div>
+              </div>
+              <div class="status-check pending">⏳</div>
+            </div>
+            <div class="med-item">
+              <div>
+                <div><strong>Lunch Break</strong></div>
+                <div style="opacity: 0.8;">12:00 PM - Upcoming</div>
+              </div>
+              <div class="status-check pending">⏰</div>
+            </div>
+            <div class="med-item">
+              <div>
+                <div><strong>Therapy Session</strong></div>
+                <div style="opacity: 0.8;">3:00 PM - Scheduled</div>
+              </div>
+              <div class="status-check pending">📅</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Emergency Panel -->
+    <div class="emergency-panel">
+      <div style="margin-bottom: 10px; font-weight: bold;">🆘 Emergency</div>
+      <button class="emergency-btn">Crisis Support</button>
+    </div>
+  </div>
+
+  <script>
+    // Update date and time
+    function updateDateTime() {
+      const now = new Date();
+      document.getElementById('currentDateTime').textContent = 
+        now.toLocaleDateString() + ' ' + 
+        now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+
+    // Mood selector functionality
+    document.querySelectorAll('.mood-item').forEach(item => {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.mood-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    // Rating dots functionality
+    document.querySelectorAll('.rating-dots').forEach(container => {
+      const dots = container.querySelectorAll('.dot');
+      dots.forEach((dot, index) => {
+        dot.addEventListener('click', function() {
+          dots.forEach((d, i) => {
+            d.classList.toggle('active', i <= index);
+          });
+        });
+      });
+    });
+
+    // Support needs tags
+    document.querySelectorAll('.need-tag').forEach(tag => {
+      tag.addEventListener('click', function() {
+        this.classList.toggle('active');
+      });
+    });
+
+    // Medication status
+    document.querySelectorAll('.status-check').forEach(check => {
+      check.addEventListener('click', function() {
+        if (this.classList.contains('pending')) {
+          this.classList.remove('pending');
+          this.classList.add('taken');
+          this.textContent = '✓';
+        } else if (this.classList.contains('taken')) {
+          this.classList.remove('taken');
+          this.classList.add('missed');
+          this.textContent = '✗';
+        } else if (this.classList.contains('missed')) {
+          this.classList.remove('missed');
+          this.classList.add('pending');
+          this.textContent = '⏳';
+        }
+      });
+    });
+
+    // Quick action buttons
+    document.querySelectorAll('.action-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Add visual feedback
+        this.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+          this.style.transform = 'scale(1)';
+        }, 150);
+        
+        // Here you would implement the actual functionality
+        console.log('Action clicked:', this.textContent);
+      });
+    });
+  </script>
+</body>
+</html>
 
