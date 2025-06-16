@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Rainbow Check-in</title>
+<style>
+:root {
+--rainbow-red: #ff6b6b;
+--rainbow-orange: #ffa726;
+--rainbow-yellow: #ffeb3b;
+--rainbow-green: #66bb6a;
+--rainbow-blue: #42a5f5;
+--rainbow-indigo: #7986cb;
+--rainbow-purple: #ab47bc;
+--cloud-white: #ffffff;
+--cloud-light: #f8f9ff;
+--sky-blue: #87ceeb;
+--soft-pink: #ffb3ba;
+}
+
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body {
+font-family: 'Comic Sans MS', cursive, sans-serif;
+background: linear-gradient(135deg, var(--sky-blue) 0%, #e0f6ff 50%, #fff 100%);
+min-height: 100vh;
+padding: 20px;
+position: relative;
+overflow-x: hidden;
+}
+
+/* Floating clouds animation */
+.cloud {
+position: absolute;
+background: var(--cloud-white);
+border-radius: 50px;
+opacity: 0.8;
+animation: float 20s infinite linear;
+}
+
+.cloud::before,
+.cloud::after {
+content: '';
+position: absolute;
+background: var(--cloud-white);
+border-radius: 50px;
+}
+
+.cloud1 {
+width: 80px;
+height: 40px;
+top: 20%;
+left: -100px;
+animation-delay: 0s;
+}
+
+.cloud1::before {
+width: 50px;
+height: 50px;
+top: -25px;
+left: 10px;
+}
+
+.cloud1::after {
+width: 60px;
+height: 40px;
+top: -15px;
+right: 10px;
+}
+
+.cloud2 {
+width: 60px;
+height: 30px;
+top: 40%;
+left: -80px;
+animation-delay: 10s;
+}
+
+.cloud2::before {
+width: 40px;
+height: 40px;
+top: -20px;
+left: 5px;
+}
+
+.cloud2::after {
+width: 50px;
+height: 30px;
+top: -10px;
+right: 5px;
+}
+
+.cloud3 {
+width: 100px;
+height: 50px;
+top: 60%;
+left: -120px;
+animation-delay: 15s;
+}
+
+.cloud3::before {
+width: 60px;
+height: 60px;
+top: -30px;
+left: 15px;
+}
+
+.cloud3::after {
+width: 70px;
+height: 50px;
+top: -20px;
+right: 15px;
+}
+
+@keyframes float {
+0% { transform: translateX(-100px); }
+100% { transform: translateX(calc(100vw + 100px)); }
+}
+
+.container {
+max-width: 800px;
+margin: 0 auto;
+background: rgba(255, 255, 255, 0.95);
+border-radius: 30px;
+padding: 30px;
+box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+position: relative;
+z-index: 10;
+border: 3px solid var(--rainbow-yellow);
+}
+
+.rainbow-border {
+position: absolute;
+top: -3px;
+left: -3px;
+right: -3px;
+bottom: -3px;
+background: linear-gradient(45deg, 
+  var(--rainbow-red), 
+  var(--rainbow-orange), 
+  var(--rainbow-yellow), 
+  var(--rainbow-green), 
+  var(--rainbow-blue), 
+  var(--rainbow-indigo), 
+  var(--rainbow-purple)
+);
+border-radius: 33px;
+z-index: -1;
+animation: rainbow-rotate 3s linear infinite;
+}
+
+@keyframes rainbow-rotate {
+0% { filter: hue-rotate(0deg); }
+100% { filter: hue-rotate(360deg); }
+}
+
+.header {
+text-align: center;
+margin-bottom: 30px;
+}
+
+.header h1 {
+font-size: 3em;
+background: linear-gradient(45deg, 
+  var(--rainbow-red), 
+  var(--rainbow-orange), 
+  var(--rainbow-yellow), 
+  var(--rainbow-green), 
+  var(--rainbow-blue), 
+  var(--rainbow-purple)
+);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+margin-bottom: 10px;
+text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.date {
+font-size: 1.3em;
+color: var(--rainbow-blue);
+font-weight: bold;
+}
+
+.sunshine {
+position: absolute;
+top: 20px;
+right: 20px;
+font-size: 4em;
+animation: spin 10s linear infinite;
+}
+
+@keyframes spin {
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
+}
+
+.question-card {
+background: linear-gradient(135deg, var(--cloud-light) 0%, var(--cloud-white) 100%);
+border-radius: 25px;
+padding: 25px;
+margin-bottom: 25px;
+border: 3px solid var(--rainbow-green);
+box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+transition: transform 0.3s ease;
+}
+
+.question-card:hover {
+transform: translateY(-5px);
+}
+
+.question-title {
+font-size: 1.8em;
+color: var(--rainbow-purple);
+margin-bottom: 20px;
+text-align: center;
+font-weight: bold;
+}
+
+.button-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+gap: 15px;
+margin-top: 15px;
+}
+
+.feeling-button {
+padding: 20px 15px;
+border: 3px solid var(--rainbow-blue);
+background: linear-gradient(135deg, var(--cloud-white) 0%, var(--cloud-light) 100%);
+border-radius: 20px;
+cursor: pointer;
+transition: all 0.3s ease;
+font-size: 1.2em;
+font-weight: bold;
+text-align: center;
+color: var(--rainbow-purple);
+min-height: 80px;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+}
+
+.feeling-button:hover {
+transform: scale(1.05);
+box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.feeling-button.selected {
+background: linear-gradient(135deg, var(--rainbow-yellow) 0%, var(--rainbow-orange) 100%);
+border-color: var(--rainbow-red);
+color: white;
+transform: scale(1.1);
+box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.emoji {
+font-size: 2em;
+margin-bottom: 5px;
+}
+
+.stars-display {
+text-align: center;
+margin: 20px 0;
+font-size: 2em;
+}
+
+.star {
+color: #ddd;
+cursor: pointer;
+transition: color 0.2s ease;
+margin: 0 5px;
+}
+
+.star.active {
+color: var(--rainbow-yellow);
+}
+
+.star:hover {
+color: var(--rainbow-orange);
+transform: scale(1.2);
+}
+
+.submit-section {
+text-align: center;
+margin-top: 30px;
+}
+
+.submit-btn {
+padding: 20px 40px;
+font-size: 1.5em;
+font-weight: bold;
+background: linear-gradient(45deg, var(--rainbow-green), var(--rainbow-blue));
+color: white;
+border: none;
+border-radius: 25px;
+cursor: pointer;
+transition: all 0.3s ease;
+box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.submit-btn:hover {
+transform: translateY(-3px);
+box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+background: linear-gradient(45deg, var(--rainbow-blue), var(--rainbow-purple));
+}
+
+.success-message {
+display: none;
+background: linear-gradient(135deg, var(--rainbow-green), var(--rainbow-blue));
+color: white;
+padding: 20px;
+border-radius: 20px;
+text-align: center;
+font-size: 1.3em;
+margin-top: 20px;
+font-weight: bold;
+}
+
+.rainbow-text {
+background: linear-gradient(45deg, 
+  var(--rainbow-red), 
+  var(--rainbow-orange), 
+  var(--rainbow-yellow), 
+  var(--rainbow-green), 
+  var(--rainbow-blue), 
+  var(--rainbow-purple)
+);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+}
+
+.celebration {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+pointer-events: none;
+z-index: 1000;
+}
+
+.confetti {
+position: absolute;
+width: 10px;
+height: 10px;
+background: var(--rainbow-red);
+animation: confetti-fall 3s linear infinite;
+}
+
+@keyframes confetti-fall {
+0% {
+  transform: translateY(-100vh) rotate(0deg);
+  opacity: 1;
+}
+100% {
+  transform: translateY(100vh) rotate(720deg);
+  opacity: 0;
+}
+}
+
+.progress-bar {
+background: #e0e0e0;
+border-radius: 15px;
+height: 20px;
+margin: 20px 0;
+overflow: hidden;
+}
+
+.progress-fill {
+background: linear-gradient(45deg, var(--rainbow-red), var(--rainbow-orange), var(--rainbow-yellow), var(--rainbow-green), var(--rainbow-blue), var(--rainbow-purple));
+height: 100%;
+width: 0%;
+transition: width 0.5s ease;
+border-radius: 15px;
+}
+
+.activity-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+gap: 10px;
+}
+
+.activity-button {
+padding: 15px 10px;
+border: 2px solid var(--rainbow-green);
+background: var(--cloud-white);
+border-radius: 15px;
+cursor: pointer;
+transition: all 0.3s ease;
+font-size: 1em;
+text-align: center;
+color: var(--rainbow-purple);
+}
+
+.activity-button:hover {
+background: var(--soft-pink);
+transform: scale(1.05);
+}
+
+.activity-button.selected {
+background: var(--rainbow-green);
+color: white;
+}
+</style>
+</head>
+<body>
+  <!-- Floating clouds -->
+  <div class="cloud cloud1"></div>
+  <div class="cloud cloud2"></div>
+  <div class="cloud cloud3"></div>
+  
+  <div class="container">
+    <div class="rainbow-border"></div>
+    <div class="sunshine">☀️</div>
+    
+    <div class="header">
+      <h1>My Rainbow Check-in! 🌈</h1>
+      <div class="date" id="currentDate"></div>
+    </div>
+    
+    <!-- Progress Bar -->
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div style="text-align: center; margin-bottom: 20px; font-size: 1.2em; color: var(--rainbow-purple);">
+      <span id="progressText">Let's start! 🌟</span>
+    </div>
+    
+    <form id="checkinForm">
+      <!-- How do I feel today? -->
+      <div class="question-card">
+        <div class="question-title">How do I feel today? 😊</div>
+        <div class="button-grid">
+          <button type="button" class="feeling-button" data-group="mood" data-value="amazing">
+            <div class="emoji">🤩</div>
+            <div>Amazing!</div>
+          </button>
+          <button type="button" class="feeling-button" data-group="mood" data-value="happy">
+            <div class="emoji">😊</div>
+            <div>Happy</div>
+          </button>
+          <button type="button" class="feeling-button" data-group="mood" data-value="okay">
+            <div class="emoji">😐</div>
+            <div>Okay</div>
+          </button>
+          <button type="button" class="feeling-button" data-group="mood" data-value="sad">
+            <div class="emoji">😢</div>
+            <div>Sad</div>
+          </button>
+          <button type="button" class="feeling-button" data-group="mood" data-value="angry">
+            <div class="emoji">😠</div>
+            <div>Angry</div>
+          </button>
+          <button type="button" class="feeling-button" data-group="mood" data-value="worried">
+            <div class="emoji">😰</div>
+            <div>Worried</div>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Energy Level -->
+      <div class="question-card">
+        <div class="question-title">How much energy do I have? ⚡</div>
+        <div class="button-grid">
+          <button type="button" class="feeling-button" data-group="energy" data-value="lots">
+            <div class="emoji">🔋</div>
+            <div>Lots!</div>
+          </button>
+          <button type="button" class="feeling-button" data-group="energy" data-value="some">
+            <div class="emoji">🔋</div>
+            <div>Some</div>
+          </button>
+          <button type="button" class="feeling-button" data-group="energy" data-value="little">
+            <div class="emoji">🪫</div>
+            <div>A little</div>
+          </button>
+          <button type="button" class="feeling-button" data-group="energy" data-value="tired">
+            <div class="emoji">😴</div>
+            <div>Very tired</div>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Sleep Quality -->
+      <div class="question-card">
+        <div class="question-title">How did I sleep last night? 🌙</div>
+        <div class="button-grid">
+          <button type="button" class="feeling-button" data-group="sleep" data-value="great">
+            <div class="emoji">😴</div>
+            <div>Great!</div>
+          </button>
+          <button type="button" class="feeling-button" data-group="sleep" data-value="good">
+            <div class="emoji">🛏️</div>
+            <div>Good</div>
+          </button>
+          <button type="button" class="feeling-button" data-group="sleep" data-value="okay">
+            <div class="emoji">😐</div>
+            <div>Okay</div>
+          </button>
+          <button type="button" class="feeling-button" data-group="sleep" data-value="bad">
+            <div class="emoji">😵</div>
+            <div>Not good</div>
+          </button>
+        </div>
+      </div>
+      
+      <!-- School/Day -->
+      <div class="question-card">
+        <div class="question-title">How was my day at school? 🏫</div>
+        <div class="button-grid">
+          <button type="button" class="feeling-button" data-group="school" data-value="awesome">
+            <div class="emoji">🌟</div>
+            <div>Awesome!</div>
+          </button>
+          <button type="button" class="feeling-button" data-group="school" data-value="fun">
+            <div class="emoji">😄</div>
+            <div>Fun</div>
+          </button>
+          <button type="button" class="feeling-button" data-group="school" data-value="okay">
+            <div class="emoji">😐</div>
+            <div>Okay</div>
+          </button>
+          <button type="button" class="feeling-button" data-group="school" data-value="hard">
+            <div class="emoji">😓</div>
+            <div>Hard</div>
+          </button>
+          <button type="button" class="feeling-button" data-group="school" data-value="no-school">
+            <div class="emoji">🏠</div>
+            <div>No school</div>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Overwhelmed -->
+      <div class="question-card">
+        <div class="question-title">Did I feel overwhelmed today? 🤯</div>
+        <div class="button-grid">
+          <button type="button" class="feeling-button" data-group="overwhelmed" data-value="not-at-all">
+            <div class="emoji">😌</div>
+            <div>Not at all</div>
+          </button>
+          <button type="button" class="feeling-button" data-group="overwhelmed" data-value="a-little">
+            <div class="emoji">😅</div>
+            <div>A little</div>
+          </button>
+          <button type="button" class="feeling-button" data-group="overwhelmed" data-value="yes">
+            <div class="emoji">😰</div>
+            <div>Yes</div>
+          </button>
+          <button type="button" class="feeling-button" data-group="overwhelmed" data-value="very-much">
+            <div class="emoji">🤯</div>
+            <div>Very much</div>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Activities -->
+      <div class="question-card">
+        <div class="question-title">What fun things did I do today? 🎨</div>
+        <div class="activity-grid">
+          <button type="button" class="activity-button" data-activity="drawing">
+            <div class="emoji">🎨</div>
+            <div>Drawing</div>
+          </button>
+          <button type="button" class="activity-button" data-activity="reading">
+            <div class="emoji">📚</div>
+            <div>Reading</div>
+          </button>
+          <button type="button" class="activity-button" data-activity="playing">
+            <div class="emoji">🧸</div>
+            <div>Playing</div>
+          </button>
+          <button type="button" class="activity-button" data-activity="outside">
+            <div class="emoji">🌳</div>
+            <div>Outside</div>
+          </button>
+          <button type="button" class="activity-button" data-activity="music">
+            <div class="emoji">🎵</div>
+            <div>Music</div>
+          </button>
+          <button type="button" class="activity-button" data-activity="friends">
+            <div class="emoji">👫</div>
+            <div>Friends</div>
+          </button>
+          <button type="button" class="activity-button" data-activity="games">
+            <div class="emoji">🎮</div>
+            <div>Games</div>
+          </button>
+          <button type="button" class="activity-button" data-activity="crafts">
+            <div class="emoji">✂️</div>
+            <div>Crafts</div>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Star Rating for Overall Day -->
+      <div class="question-card">
+        <div class="question-title">How many stars for my whole day? ⭐</div>
+        <div class="stars-display" id="starRating">
+          <span class="star" data-rating="1">⭐</span>
+          <span class="star" data-rating="2">⭐</span>
+          <span class="star" data-rating="3">⭐</span>
+          <span class="star" data-rating="4">⭐</span>
+          <span class="star" data-rating="5">⭐</span>
+        </div>
+      </div>
+      
+      <div class="submit-section">
+        <button type="submit" class="submit-btn">All Done! 🌈✨</button>
+      </div>
+    </form>
+    
+    <div class="success-message" id="successMessage">
+      🎉 Great job! You completed your check-in! 🌟
+    </div>
+  </div>
+  
+  <!-- Celebration confetti -->
+  <div class="celebration" id="celebration"></div>
+  
+  <script>
+    // Initialize data
+    let checkinData = JSON.parse(localStorage.getItem('daughterCheckins') || '[]');
+    let currentAnswers = {};
+    let totalQuestions = 6; // mood, energy, sleep, school, overwhelmed, stars
+    let answeredQuestions = 0;
+    
+    // Set current date
+    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric'
+    });
+    
+    // Handle button selections
+    const buttons = document.querySelectorAll('.feeling-button');
+    buttons.forEach(button => {
+      button.addEventListener('click', function() {
+        const group = this.dataset.group;
+        const value = this.dataset.value;
+        
+        // Remove selection from other buttons in the same group
+        const groupButtons = document.querySelectorAll(`[data-group="${group}"]`);
+        groupButtons.forEach(btn => btn.classList.remove('selected'));
+        
+        // Select this button
+        this.classList.add('selected');
+        
+        // Track answer
+        if (!currentAnswers[group]) {
+          answeredQuestions++;
+        }
+        currentAnswers[group] = value;
+        
+        updateProgress();
+      });
+    });
+    
+    // Handle activity buttons (multiple selection)
+    const activityButtons = document.querySelectorAll('.activity-button');
+    activityButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        this.classList.toggle('selected');
+        
+        // Collect all selected activities
+        const selectedActivities = Array.from(document.querySelectorAll('.activity-button.selected'))
+          .map(btn => btn.dataset.activity);
+        
+        currentAnswers.activities = selectedActivities;
+      });
+    });
+    
+    // Handle star rating
+    const stars = document.querySelectorAll('.star');
+    stars.forEach(star => {
+      star.addEventListener('click', function() {
+        const rating = parseInt(this.dataset.rating);
+        
+        // Update star display
+        stars.forEach((s, index) => {
+          if (index < rating) {
+            s.classList.add('active');
+          } else {
+            s.classList.remove('active');
+          }
+        });
+        
+        // Track answer
+        if (!currentAnswers.stars) {
+          answeredQuestions++;
+        }
+        currentAnswers.stars = rating;
+        
+        updateProgress();
+      });
+      
+      star.addEventListener('mouseover', function() {
+        const rating = parseInt(this.dataset.rating);
+        stars.forEach((s, index) => {
+          if (index < rating) {
+            s.style.color = 'var(--rainbow-orange)';
+          } else {
+            s.style.color = '#ddd';
+          }
+        });
+      });
+      
+      star.addEventListener('mouseout', function() {
+        stars.forEach((s, index) => {
+          const currentRating = currentAnswers.stars || 0;
+          if (index < currentRating) {
+            s.style.color = 'var(--rainbow-yellow)';
+          } else {
+            s.style.color = '#ddd';
+          }
+        });
+      });
+    });
+    
+    // Update progress bar
+    function updateProgress() {
+      const progress = (answeredQuestions / totalQuestions) * 100;
+      document.getElementById('progressFill').style.width = progress + '%';
+      
+      let progressText = '';
+      if (progress === 0) progressText = "Let's start! 🌟";
+      else if (progress < 50) progressText = "Great job! Keep going! 🌈";
+      else if (progress < 100) progressText = "Almost done! You're doing amazing! ⭐";
+      else progressText = "All done! Ready to submit! 🎉";
+      
+      document.getElementById('progressText').textContent = progressText;
+    }
+    
+    // Create confetti
+    function createConfetti() {
+      const celebration = document.getElementById('celebration');
+      celebration.style.display = 'block';
+      
+      const colors = ['var(--rainbow-red)', 'var(--rainbow-orange)', 'var(--rainbow-yellow)', 
+                     'var(--rainbow-green)', 'var(--rainbow-blue)', 'var(--rainbow-purple)'];
+      
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = Math.random() * 3 + 's';
+        confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        celebration.appendChild(confetti);
+      }
+      
+      setTimeout(() => {
+        celebration.style.display = 'none';
+        celebration.innerHTML = '';
+      }, 5000);
+    }
+    
+    // Handle form submission
+    document.getElementById('checkinForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const data = {
+        date: new Date().toISOString().split('T')[0],
+        timestamp: new Date().toISOString(),
+        mood: currentAnswers.mood || '',
+        energy: currentAnswers.energy || '',
+        sleep: currentAnswers.sleep || '',
+        school: currentAnswers.school || '',
+        overwhelmed: currentAnswers.overwhelmed || '',
+        activities: (currentAnswers.activities || []).join(';'),
+        stars: currentAnswers.stars || 0
+      };
+      
+      // Store data locally
+      checkinData.push(data);
+      localStorage.setItem('daughterCheckins', JSON.stringify(checkinData));
+      
+      // Save to CSV file
+      saveToCSV(data);
+      
+      // Show success message and celebration
+      const successMessage = document.getElementById('successMessage');
+      successMessage.style.display = 'block';
+      createConfetti();
+      
+      setTimeout(() => {
+        successMessage.style.display = 'none';
+      }, 5000);
+      
+      console.log('Daughter check-in data:', data);
+    });
+    
+    // CSV Export functionality
+    function saveToCSV(newData) {
+      const csvData = [...checkinData];
+      
+      if (csvData.length === 0) return;
+      
+      // CSV headers
+      const headers = [
+        'Date', 'Timestamp', 'Mood', 'Energy', 'Sleep', 'School', 
+        'Overwhelmed', 'Activities', 'Star Rating'
+      ];
+      
+      // Convert data to CSV format
+      const csvContent = [
+        headers.join(','),
+        ...csvData.map(row => [
+          row.date,
+          row.timestamp,
+          row.mood,
+          row.energy,
+          row.sleep,
+          row.school,
+          row.overwhelmed,
+          `"${row.activities}"`,
+          row.stars
+        ].join(','))
+      ].join('\n');
+      
+      // Create and download file
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `daughter-checkin-data-${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+</body>
+</html>
