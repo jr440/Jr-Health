@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BPD Support Tool - Jesse</title>
+  <style>
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+          font-family: 'Arial', sans-serif;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          height: 100vh;
+          overflow: hidden;
+          user-select: none;
+          color: white;
+      }
+
+      .container {
+          display: flex;
+          flex-direction: column;
+          height: 100vh;
+          padding: 15px;
+      }
+
+      .header {
+          text-align: center;
+          margin-bottom: 15px;
+      }
+
+      .header h1 {
+          font-size: 2.2em;
+          margin-bottom: 5px;
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      }
+
+      .header p {
+          font-size: 1.1em;
+          opacity: 0.9;
+      }
+
+      .emotion-check {
+          background: rgba(255,255,255,0.15);
+          border-radius: 15px;
+          padding: 15px;
+          margin-bottom: 15px;
+          backdrop-filter: blur(10px);
+      }
+
+      .emotion-check h2 {
+          text-align: center;
+          margin-bottom: 10px;
+          font-size: 1.2em;
+      }
+
+      .emotion-buttons {
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          gap: 8px;
+      }
+
+      .emotion-btn {
+          padding: 10px 5px;
+          border: none;
+          border-radius: 10px;
+          font-size: 0.9em;
+          font-weight: bold;
+          color: white;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          text-align: center;
+      }
+
+      .emotion-btn:active {
+          transform: scale(0.95);
+      }
+
+      .emotion-btn.selected {
+          transform: scale(1.05);
+          box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+      }
+
+      .main-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+          flex: 1;
+      }
+
+      .support-card {
+          background: rgba(255,255,255,0.15);
+          border-radius: 15px;
+          padding: 15px;
+          backdrop-filter: blur(10px);
+          border: 2px solid rgba(255,255,255,0.2);
+          cursor: pointer;
+          transition: all 0.3s ease;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          min-height: 120px;
+      }
+
+      .support-card:hover {
+          background: rgba(255,255,255,0.25);
+          transform: translateY(-2px);
+      }
+
+      .support-card:active {
+          transform: scale(0.95);
+      }
+
+      .support-card .emoji {
+          font-size: 2.5em;
+          margin-bottom: 8px;
+      }
+
+      .support-card h3 {
+          font-size: 1.1em;
+          margin-bottom: 5px;
+      }
+
+      .support-card p {
+          font-size: 0.9em;
+          opacity: 0.9;
+      }
+
+      .abandonment { background: linear-gradient(135deg, #ff6b6b, #ee5a52); }
+      .identity { background: linear-gradient(135deg, #4ecdc4, #44a08d); }
+      .impulsivity { background: linear-gradient(135deg, #feca57, #ff9ff3); }
+      .mood { background: linear-gradient(135deg, #48dbfb, #0abde3); }
+      .anger { background: linear-gradient(135deg, #ff9ff3, #feca57); }
+      .emptiness { background: linear-gradient(135deg, #a55eea, #8b5cf6); }
+
+      .modal {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0,0,0,0.8);
+          backdrop-filter: blur(5px);
+          z-index: 1000;
+      }
+
+      .modal-content {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: linear-gradient(135deg, #667eea, #764ba2);
+          padding: 25px;
+          border-radius: 20px;
+          max-width: 600px;
+          width: 90%;
+          max-height: 80vh;
+          overflow-y: auto;
+          color: white;
+      }
+
+      .modal-content h3 {
+          margin-bottom: 15px;
+          font-size: 1.6em;
+          text-align: center;
+      }
+
+      .modal-content .technique {
+          background: rgba(255,255,255,0.1);
+          padding: 15px;
+          border-radius: 10px;
+          margin-bottom: 15px;
+      }
+
+      .modal-content .technique h4 {
+          margin-bottom: 10px;
+          color: #ffd700;
+      }
+
+      .modal-content .technique p {
+          line-height: 1.5;
+          margin-bottom: 8px;
+      }
+
+      .modal-content .technique ul {
+          margin-left: 20px;
+          margin-bottom: 10px;
+      }
+
+      .modal-content .technique li {
+          margin-bottom: 5px;
+      }
+
+      .close-btn {
+          background: #ff6b6b;
+          color: white;
+          border: none;
+          padding: 12px 25px;
+          border-radius: 25px;
+          font-size: 1.1em;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          display: block;
+          margin: 20px auto 0;
+      }
+
+      .close-btn:hover {
+          background: #ee5a52;
+          transform: translateY(-2px);
+      }
+
+      .set-reminder {
+          position: fixed;
+          bottom: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: rgba(255,255,255,0.2);
+          padding: 10px 20px;
+          border-radius: 25px;
+          backdrop-filter: blur(10px);
+          font-size: 0.9em;
+          text-align: center;
+      }
+
+      .breathing-circle {
+          width: 150px;
+          height: 150px;
+          border: 4px solid #ffd700;
+          border-radius: 50%;
+          margin: 20px auto;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.2em;
+          animation: breathe 12s infinite;
+      }
+
+      @keyframes breathe {
+          0%, 100% { transform: scale(1); border-color: #ffd700; }
+          33% { transform: scale(1.3); border-color: #ff6b6b; }
+          66% { transform: scale(1.3); border-color: #4ecdc4; }
+      }
+
+      .exit-btn {
+          position: fixed;
+          top: 15px;
+          right: 15px;
+          background: rgba(255,255,255,0.2);
+          border: none;
+          color: white;
+          padding: 8px 12px;
+          border-radius: 8px;
+          cursor: pointer;
+          font-size: 1em;
+      }
+
+      /* Emotion colors */
+      .overwhelmed { background: linear-gradient(135deg, #8e44ad, #6c3483); }
+      .angry { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+      .empty { background: linear-gradient(135deg, #34495e, #2c3e50); }
+      .abandoned { background: linear-gradient(135deg, #f39c12, #e67e22); }
+      .confused { background: linear-gradient(135deg, #3498db, #2980b9); }
+  </style>
+</head>
+<body>
+  <div class="container">
+      <button class="exit-btn" onclick="exitApp()">❌</button>
+      
+      <div class="header">
+          <h1>🛡️ BPD Support Tool</h1>
+          <p>You're not alone, Jesse. Let's work through this together.</p>
+      </div>
+
+      <div class="emotion-check">
+          <h2>How are you feeling right now?</h2>
+          <div class="emotion-buttons">
+              <button class="emotion-btn overwhelmed" onclick="setEmotion('overwhelmed')">Overwhelmed</button>
+              <button class="emotion-btn angry" onclick="setEmotion('angry')">Angry</button>
+              <button class="emotion-btn empty" onclick="setEmotion('empty')">Empty</button>
+              <button class="emotion-btn abandoned" onclick="setEmotion('abandoned')">Abandoned</button>
+              <button class="emotion-btn confused" onclick="setEmotion('confused')">Confused</button>
+          </div>
+      </div>
+
+      <div class="main-grid">
+          <div class="support-card abandonment" onclick="showSupport('abandonment')">
+              <div class="emoji">🤗</div>
+              <h3>Fear of Abandonment</h3>
+              <p>Coping with separation anxiety</p>
+          </div>
+
+          <div class="support-card identity" onclick="showSupport('identity')">
+              <div class="emoji">🪞</div>
+              <h3>Identity Confusion</h3>
+              <p>"Who am I?" support</p>
+          </div>
+
+          <div class="support-card impulsivity" onclick="showSupport('impulsivity')">
+              <div class="emoji">⚡</div>
+              <h3>Impulsive Urges</h3>
+              <p>Before you act, try this</p>
+          </div>
+
+          <div class="support-card mood" onclick="showSupport('mood')">
+              <div class="emoji">🎭</div>
+              <h3>Mood Swings</h3>
+              <p>Riding the emotional waves</p>
+          </div>
+
+          <div class="support-card anger" onclick="showSupport('anger')">
+              <div class="emoji">🔥</div>
+              <h3>Intense Anger</h3>
+              <p>Cooling down strategies</p>
+          </div>
+
+          <div class="support-card emptiness" onclick="showSupport('emptiness')">
+              <div class="emoji">🕳️</div>
+              <h3>Feeling Empty</h3>
+              <p>Filling the void</p>
+          </div>
+      </div>
+
+      <div class="set-reminder">
+          💡 Remember: Support (I care), Empathy (I understand), Truth (reality check)
+      </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="modal">
+      <div class="modal-content" id="modalContent">
+          <!-- Content will be inserted here -->
+      </div>
+  </div>
+
+  <script>
+      let currentEmotion = null;
+      let supportLog = JSON.parse(localStorage.getItem('bpdSupportLog') || '[]');
+
+      function setEmotion(emotion) {
+          currentEmotion = emotion;
+          
+          // Update button appearance
+          document.querySelectorAll('.emotion-btn').forEach(btn => {
+              btn.classList.remove('selected');
+          });
+          event.target.classList.add('selected');
+          
+          logAction(`Feeling: ${emotion}`);
+          
+          // Provide immediate support based on emotion
+          let message = getEmotionSupport(emotion);
+          setTimeout(() => {
+              showModal('Immediate Support', message);
+          }, 500);
+      }
+
+      function getEmotionSupport(emotion) {
+          const support = {
+              overwhelmed: "🫂 **You're feeling overwhelmed right now, and that's okay.**\n\n**Support:** I care about you and want to help you through this.\n**Empathy:** I understand everything feels like too much right now.\n**Truth:** This feeling will pass. You've survived overwhelming moments before.\n\n**Try:** Take 5 deep breaths. Focus on one thing at a time.",
+              angry: "🔥 **Your anger is valid, but let's channel it safely.**\n\n**Support:** Your feelings matter, and I'm here with you.\n**Empathy:** I understand you're frustrated and things feel unfair.\n**Truth:** Acting on anger impulsively often makes things worse.\n\n**Try:** Count to 10. Squeeze an ice cube. Go for a walk.",
+              empty: "🕳️ **The emptiness feels overwhelming, but you're not actually empty.**\n\n**Support:** You have value and worth, even when you can't feel it.\n**Empathy:** I understand how painful and scary this emptiness feels.\n**Truth:** This is a symptom, not your reality. You matter.\n\n**Try:** Call someone. Listen to music. Do something creative.",
+              abandoned: "🤗 **You're not alone, even when it feels like everyone leaves.**\n\n**Support:** I'm here with you right now through this tool.\n**Empathy:** I understand how terrifying abandonment feels.\n**Truth:** People caring about you doesn't mean they'll never be busy or unavailable.\n\n**Try:** Use a transitional object. Text a friend. Remember past support.",
+              confused: "🧭 **It's okay not to know who you are right now.**\n\n**Support:** You're valuable regardless of how clear your identity feels.\n**Empathy:** I understand how disorienting and scary this confusion is.\n**Truth:** Identity develops over time. You don't need to have it all figured out today.\n\n**Try:** Write down 3 things you know about yourself. Do an activity you enjoy."
+          };
+          return support[emotion] || "You're doing great by checking in with yourself. 💙";
+      }
+
+      function showSupport(type) {
+          logAction(`Accessed ${type} support`);
+          
+          const content = {
+              abandonment: `
+                  <h3>🤗 Coping with Fear of Abandonment</h3>
+                  
+                  <div class="technique">
+                      <h4>Use Transitional Objects</h4>
+                      <p>Like Princess Diana with her stuffed animal, carry something that represents connection:</p>
+                      <ul>
+                          <li>A photo of Amanda or loved ones</li>
+                          <li>A piece of jewelry or clothing item</li>
+                          <li>Play "your song" when feeling alone</li>
+                          <li>Keep a comforting text message saved</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>Prepare for Separations</h4>
+                      <p>Don't avoid discussing upcoming separations. Instead:</p>
+                      <ul>
+                          <li>Talk about it beforehand</li>
+                          <li>Plan something positive before the separation</li>
+                          <li>Arrange alternative comfort sources</li>
+                          <li>Set realistic expectations for contact</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>SET Response for Yourself</h4>
+                      <p><strong>Support:</strong> "I care about maintaining my relationships."</p>
+                      <p><strong>Empathy:</strong> "I understand I'm scared of being left alone."</p>
+                      <p><strong>Truth:</strong> "People can love me and still need space sometimes."</p>
+                  </div>
+              `,
+              
+              identity: `
+                  <h3>🪞 Working Through Identity Confusion</h3>
+                  
+                  <div class="technique">
+                      <h4>Acknowledge the "No-Win" Feeling</h4>
+                      <p>Sometimes you feel frustrated no matter what you choose. This is normal with BPD:</p>
+                      <ul>
+                          <li>Recognize when you're in a "damned if you do, damned if you don't" situation</li>
+                          <li>It's okay to feel conflicted about decisions</li>
+                          <li>You don't have to have all the answers right now</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>Use the Deflection Technique</h4>
+                      <p>When unsure about your stance: "I'm not sure about that. What do you think?"</p>
+                      <p>This gives you time to process without committing to something you're uncertain about.</p>
+                  </div>
+
+                  <div class="technique">
+                      <h4>Join Team Activities</h4>
+                      <p>Participate in group activities that help define identity:</p>
+                      <ul>
+                          <li>Sports groups or fitness classes</li>
+                          <li>Community projects or volunteering</li>
+                          <li>Creative workshops or classes</li>
+                          <li>Support groups</li>
+                      </ul>
+                  </div>
+              `,
+              
+              impulsivity: `
+                  <h3>⚡ Managing Impulsive Urges</h3>
+                  
+                  <div class="technique">
+                      <h4>Predict the Pattern</h4>
+                      <p>Impulsive behaviors often follow patterns:</p>
+                      <ul>
+                          <li>Notice when you're feeling "too stable" or bored</li>
+                          <li>Recognize the build-up of pressure or tension</li>
+                          <li>Remember: impulsive urges often come when life is going well</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>Walk Through Consequences</h4>
+                      <p>Before acting, mentally walk through what will happen:</p>
+                      <ul>
+                          <li>"If I do this, then..."</li>
+                          <li>"How will I feel tomorrow?"</li>
+                          <li>"What happened last time I did this?"</li>
+                          <li>"Is this solving the real problem?"</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>Focus on the Underlying Feeling</h4>
+                      <p>Ask yourself:</p>
+                      <ul>
+                          <li>"What am I really angry about?"</li>
+                          <li>"What am I trying to avoid feeling?"</li>
+                          <li>"What do I need right now instead?"</li>
+                      </ul>
+                  </div>
+              `,
+              
+              mood: `
+                  <h3>🎭 Riding the Mood Swings</h3>
+                  
+                  <div class="technique">
+                      <h4>Procrastinate Productively</h4>
+                      <p>When emotions are high, delay major decisions:</p>
+                      <ul>
+                          <li>"Let me check my schedule first"</li>
+                          <li>"I need to think about this"</li>
+                          <li>"Let me get back to you on that"</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>Recognize the Swing</h4>
+                      <p>When you notice a mood change:</p>
+                      <ul>
+                          <li>Name it: "I'm in a down phase right now"</li>
+                          <li>Take responsibility: "This is my mood, not reality"</li>
+                          <li>Adapt: "I'll try to manage this as best I can"</li>
+                          <li>Communicate: Let others know you're struggling</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>Breathing Exercise</h4>
+                      <div class="breathing-circle">Breathe</div>
+                      <p>Follow the circle: Inhale as it grows, exhale as it shrinks.</p>
+                      <p>4 counts in, 7 counts hold, 8 counts out.</p>
+                  </div>
+              `,
+              
+              anger: `
+                  <h3>🔥 Cooling Down Intense Anger</h3>
+                  
+                  <div class="technique">
+                      <h4>Let the Dust Settle</h4>
+                      <p>When anger hits:</p>
+                      <ul>
+                          <li>Wait for the initial outburst to finish</li>
+                          <li>Take a beat of silence</li>
+                          <li>Don't respond immediately</li>
+                          <li>Let the contrast between loud and quiet sink in</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>De-escalate Yourself</h4>
+                      <p>Physical techniques:</p>
+                      <ul>
+                          <li>Lower your voice (even if others are loud)</li>
+                          <li>Slow your movements</li>
+                          <li>Unclench your fists</li>
+                          <li>Take deep breaths</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>Ice Cube Technique</h4>
+                      <p>Hold an ice cube in your hand:</p>
+                      <ul>
+                          <li>Focus on the cold sensation</li>
+                          <li>Feel it melting</li>
+                          <li>Notice the water dripping</li>
+                          <li>This brings you back to the present</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>Stay Safe</h4>
+                      <p>If you feel like you might hurt yourself or others:</p>
+                      <ul>
+                          <li>Leave the situation immediately</li>
+                          <li>Call someone for support</li>
+                          <li>Use your crisis plan</li>
+                          <li>Remember: This feeling will pass</li>
+                      </ul>
+                  </div>
+              `,
+              
+              emptiness: `
+                  <h3>🕳️ Filling the Emptiness</h3>
+                  
+                  <div class="technique">
+                      <h4>Get Moving</h4>
+                      <p>Physical activity helps combat emptiness:</p>
+                      <ul>
+                          <li>Go for a walk outside</li>
+                          <li>Do jumping jacks or push-ups</li>
+                          <li>Dance to music</li>
+                          <li>Clean or organize something</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>Engage Your Mind</h4>
+                      <p>Intellectual stimulation can fill the void:</p>
+                      <ul>
+                          <li>Read something interesting</li>
+                          <li>Learn a new skill online</li>
+                          <li>Do a puzzle or brain game</li>
+                          <li>Write in a journal</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>Connect with Others</h4>
+                      <p>Social engagement combats isolation:</p>
+                      <ul>
+                          <li>Text or call a friend</li>
+                          <li>Join an online community</li>
+                          <li>Volunteer for a cause you care about</li>
+                          <li>Attend a group activity or class</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>Create Something</h4>
+                      <p>Creative expression gives purpose:</p>
+                      <ul>
+                          <li>Draw, paint, or doodle</li>
+                          <li>Write poetry or stories</li>
+                          <li>Make music or sing</li>
+                          <li>Cook or bake something</li>
+                      </ul>
+                  </div>
+              `
+          };
+
+          showModal('', content[type] || 'Support content coming soon...');
+      }
+
+      function showModal(title, content) {
+          const modal = document.getElementById('modal');
+          const modalContent = document.getElementById('modalContent');
+          
+          let html = title ? `<h3>${title}</h3>` : '';
+          html += content;
+          html += `<button class="close-btn" onclick="closeModal()">Close</button>`;
+          
+          modalContent.innerHTML = html;
+          modal.style.display = 'block';
+      }
+
+      function closeModal() {
+          document.getElementById('modal').style.display = 'none';
+      }
+
+      function logAction(action) {
+          const timestamp = new Date().toISOString();
+          const logEntry = {
+              timestamp,
+              action,
+              emotion: currentEmotion
+          };
+          
+          supportLog.push(logEntry);
+          localStorage.setItem('bpdSupportLog', JSON.stringify(supportLog));
+      }
+
+      function exitApp() {
+          logAction('BPD support tool closed');
+          if (confirm('Remember: You\'re doing great by using these tools. Come back anytime you need support.')) {
+              window.close();
+          }
+      }
+
+      // Prevent accidental navigation during emotional distress
+      window.addEventListener('beforeunload', function(e) {
+          if (currentEmotion && ['overwhelmed', 'angry', 'abandoned'].includes(currentEmotion)) {
+              e.preventDefault();
+              e.returnValue = '';
+          }
+      });
+
+      // Auto-save support log every 5 minutes
+      setInterval(() => {
+          localStorage.setItem('bpdSupportLog', JSON.stringify(supportLog));
+      }, 300000);
+  </script>
+</body>
+</html>
