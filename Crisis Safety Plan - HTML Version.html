@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crisis Safety Plan</title>
+  <style>
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+          font-family: 'Arial', sans-serif;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          height: 100vh;
+          overflow: hidden;
+          user-select: none;
+      }
+
+      .container {
+          display: flex;
+          flex-direction: column;
+          height: 100vh;
+          padding: 20px;
+          color: white;
+      }
+
+      .header {
+          text-align: center;
+          margin-bottom: 20px;
+      }
+
+      .header h1 {
+          font-size: 2.5em;
+          margin-bottom: 10px;
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      }
+
+      .crisis-level {
+          background: rgba(255,255,255,0.1);
+          border-radius: 15px;
+          padding: 20px;
+          margin-bottom: 20px;
+          backdrop-filter: blur(10px);
+      }
+
+      .crisis-level h2 {
+          text-align: center;
+          margin-bottom: 15px;
+          font-size: 1.3em;
+      }
+
+      .level-buttons {
+          display: flex;
+          justify-content: space-between;
+          gap: 8px;
+      }
+
+      .level-btn {
+          flex: 1;
+          height: 60px;
+          border: none;
+          border-radius: 10px;
+          font-size: 1.2em;
+          font-weight: bold;
+          color: white;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      }
+
+      .level-btn:active {
+          transform: scale(0.95);
+      }
+
+      .level-btn.selected {
+          transform: scale(1.1);
+          box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+      }
+
+      .actions-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 15px;
+          flex: 1;
+      }
+
+      .action-btn {
+          background: rgba(255,255,255,0.15);
+          border: none;
+          border-radius: 20px;
+          padding: 20px;
+          color: white;
+          font-size: 1.1em;
+          font-weight: bold;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          backdrop-filter: blur(10px);
+          border: 2px solid rgba(255,255,255,0.2);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          min-height: 100px;
+      }
+
+      .action-btn:hover {
+          background: rgba(255,255,255,0.25);
+          transform: translateY(-2px);
+          box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+      }
+
+      .action-btn:active {
+          transform: scale(0.95);
+      }
+
+      .action-btn .emoji {
+          font-size: 2em;
+          margin-bottom: 8px;
+      }
+
+      .emergency {
+          background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+          animation: pulse 2s infinite;
+      }
+
+      .crisis-line {
+          background: linear-gradient(135deg, #feca57, #ff9ff3);
+      }
+
+      .breathing {
+          background: linear-gradient(135deg, #48dbfb, #0abde3);
+      }
+
+      .grounding {
+          background: linear-gradient(135deg, #1dd1a1, #10ac84);
+      }
+
+      .support {
+          background: linear-gradient(135deg, #a55eea, #8b5cf6);
+      }
+
+      .distraction {
+          background: linear-gradient(135deg, #26de81, #20bf6b);
+      }
+
+      @keyframes pulse {
+          0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7); }
+          70% { box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); }
+          100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
+      }
+
+      .modal {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0,0,0,0.8);
+          backdrop-filter: blur(5px);
+          z-index: 1000;
+      }
+
+      .modal-content {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: linear-gradient(135deg, #667eea, #764ba2);
+          padding: 30px;
+          border-radius: 20px;
+          text-align: center;
+          max-width: 500px;
+          width: 90%;
+          color: white;
+      }
+
+      .modal-content h3 {
+          margin-bottom: 20px;
+          font-size: 1.8em;
+      }
+
+      .modal-content p {
+          margin-bottom: 20px;
+          line-height: 1.6;
+          font-size: 1.1em;
+      }
+
+      .close-btn {
+          background: #ff6b6b;
+          color: white;
+          border: none;
+          padding: 12px 30px;
+          border-radius: 25px;
+          font-size: 1.1em;
+          cursor: pointer;
+          transition: all 0.3s ease;
+      }
+
+      .close-btn:hover {
+          background: #ee5a52;
+          transform: translateY(-2px);
+      }
+
+      .breathing-circle {
+          width: 200px;
+          height: 200px;
+          border: 4px solid white;
+          border-radius: 50%;
+          margin: 20px auto;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.5em;
+          animation: breathe 12s infinite;
+      }
+
+      @keyframes breathe {
+          0%, 100% { transform: scale(1); }
+          33% { transform: scale(1.2); }
+          66% { transform: scale(1.2); }
+      }
+
+      .exit-btn {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: rgba(255,255,255,0.2);
+          border: none;
+          color: white;
+          padding: 10px 15px;
+          border-radius: 10px;
+          cursor: pointer;
+          font-size: 1.1em;
+      }
+
+      /* Crisis level colors */
+      .level-1, .level-2 { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+      .level-3, .level-4 { background: linear-gradient(135deg, #f1c40f, #f39c12); }
+      .level-5, .level-6 { background: linear-gradient(135deg, #e67e22, #d35400); }
+      .level-7, .level-8 { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+      .level-9, .level-10 { background: linear-gradient(135deg, #8e44ad, #6c3483); }
+  </style>
+</head>
+<body>
+  <div class="container">
+      <button class="exit-btn" onclick="exitApp()">❌ Exit</button>
+      
+      <div class="header">
+          <h1>🛡️ Crisis Safety Plan</h1>
+          <p>You're not alone, Jesse. Let's work through this together.</p>
+      </div>
+
+      <div class="crisis-level">
+          <h2>How intense are your feelings right now? (1-10)</h2>
+          <div class="level-buttons" id="levelButtons">
+              <!-- Level buttons will be generated by JavaScript -->
+          </div>
+      </div>
+
+      <div class="actions-grid">
+          <button class="action-btn emergency" onclick="emergencyCall()">
+              <div class="emoji">🚨</div>
+              <div>EMERGENCY<br>Call 000</div>
+          </button>
+
+          <button class="action-btn crisis-line" onclick="crisisLine()">
+              <div class="emoji">💬</div>
+              <div>Crisis Support<br>13 11 14</div>
+          </button>
+
+          <button class="action-btn breathing" onclick="breathingExercise()">
+              <div class="emoji">🧘</div>
+              <div>Breathing<br>Exercise</div>
+          </button>
+
+          <button class="action-btn grounding" onclick="groundingTech()">
+              <div class="emoji">❄️</div>
+              <div>Ice Cube<br>Grounding</div>
+          </button>
+
+          <button class="action-btn support" onclick="safePerson()">
+              <div class="emoji">📱</div>
+              <div>Call Safe<br>Person</div>
+          </button>
+
+          <button class="action-btn distraction" onclick="distractionTools()">
+              <div class="emoji">🎵</div>
+              <div>Distraction<br>Tools</div>
+          </button>
+      </div>
+  </div>
+
+  <!-- Modals -->
+  <div id="modal" class="modal">
+      <div class="modal-content" id="modalContent">
+          <!-- Modal content will be inserted here -->
+      </div>
+  </div>
+
+  <script>
+      let currentCrisisLevel = 5;
+      let crisisLog = JSON.parse(localStorage.getItem('crisisLog') || '[]');
+
+      // Generate level buttons
+      function generateLevelButtons() {
+          const container = document.getElementById('levelButtons');
+          for (let i = 1; i <= 10; i++) {
+              const btn = document.createElement('button');
+              btn.className = `level-btn level-${i}`;
+              btn.textContent = i;
+              btn.onclick = () => setCrisisLevel(i);
+              container.appendChild(btn);
+          }
+      }
+
+      function setCrisisLevel(level) {
+          currentCrisisLevel = level;
+          
+          // Update button appearance
+          document.querySelectorAll('.level-btn').forEach(btn => {
+              btn.classList.remove('selected');
+          });
+          document.querySelector(`.level-btn:nth-child(${level})`).classList.add('selected');
+          
+          // Log the crisis level
+          logAction(`Crisis level set to ${level}`);
+          
+          // Provide feedback based on level
+          let message = '';
+          if (level >= 8) {
+              message = 'You\'re in high distress. Consider emergency support or calling a safe person.';
+          } else if (level >= 6) {
+              message = 'You\'re struggling right now. Use your coping strategies. You\'ve got this, Jesse.';
+          } else if (level >= 4) {
+              message = 'You\'re managing but feeling stressed. Good job checking in.';
+          } else {
+              message = 'You\'re doing well. Keep using your tools and taking care of yourself.';
+          }
+          
+          showModal('Crisis Level Assessment', message);
+      }
+
+      function logAction(action) {
+          const timestamp = new Date().toISOString();
+          const logEntry = {
+              timestamp,
+              action,
+              crisisLevel: currentCrisisLevel
+          };
+          
+          crisisLog.push(logEntry);
+          localStorage.setItem('crisisLog', JSON.stringify(crisisLog));
+      }
+
+      function showModal(title, content, isBreathing = false) {
+          const modal = document.getElementById('modal');
+          const modalContent = document.getElementById('modalContent');
+          
+          let html = `<h3>${title}</h3>`;
+          
+          if (isBreathing) {
+              html += `
+                  <div class="breathing-circle">Breathe</div>
+                  <p>4-7-8 Breathing Technique</p>
+                  <p>• Breathe in for 4 counts<br>• Hold for 7 counts<br>• Breathe out for 8 counts</p>
+                  <p>Repeat 4 times. Focus on the circle expanding and contracting.</p>
+              `;
+          } else {
+              html += `<p>${content}</p>`;
+          }
+          
+          html += `<button class="close-btn" onclick="closeModal()">Close</button>`;
+          
+          modalContent.innerHTML = html;
+          modal.style.display = 'block';
+      }
+
+      function closeModal() {
+          document.getElementById('modal').style.display = 'none';
+      }
+
+      function emergencyCall() {
+          logAction('Emergency call initiated');
+          showModal('Emergency Services', 
+              'In a real emergency, this would dial 000.<br><br>' +
+              '<strong>If you\'re in immediate danger:</strong><br>' +
+              '• Call 000 now<br>' +
+              '• Go to your nearest emergency department<br>' +
+              '• Call a trusted person to stay with you<br><br>' +
+              'You matter, Jesse. Your life has value.');
+      }
+
+      function crisisLine() {
+          logAction('Crisis support line accessed');
+          showModal('Crisis Support', 
+              '<strong>Lifeline:</strong> 13 11 14<br>' +
+              '<strong>Crisis Text:</strong> Text HELLO to 741741<br>' +
+              '<strong>Beyond Blue:</strong> 1300 22 4636<br><br>' +
+              'These services are free, confidential, and available 24/7.<br><br>' +
+              'You don\'t have to go through this alone.');
+      }
+
+      function breathingExercise() {
+          logAction('Breathing exercise started');
+          showModal('Breathing Exercise', '', true);
+      }
+
+      function groundingTech() {
+          logAction('Grounding technique accessed');
+          showModal('Ice Cube Grounding', 
+              'Get an ice cube and hold it in your hand.<br><br>' +
+              '<strong>Focus on:</strong><br>' +
+              '• The cold sensation<br>' +
+              '• How it feels as it melts<br>' +
+              '• The water dripping<br>' +
+              '• The temperature change<br><br>' +
+              'This helps bring you back to the present moment and out of emotional overwhelm.');
+      }
+
+      function safePerson() {
+          logAction('Safe person contact accessed');
+          showModal('Safe People to Contact', 
+              '<strong>Your Support Network:</strong><br><br>' +
+              '📞 Amanda: [Add her number]<br>' +
+              '📞 GP/Mental Health Team: [Add number]<br>' +
+              '📞 Trusted Friend: [Add number]<br>' +
+              '📞 Crisis Line: 13 11 14<br><br>' +
+              'It\'s okay to reach out. People care about you.');
+      }
+
+      function distractionTools() {
+          logAction('Distraction tools accessed');
+          showModal('Distraction & Coping Tools', 
+              '<strong>Try these right now:</strong><br><br>' +
+              '🎵 Play your crisis playlist<br>' +
+              '✍️ Write down 3 things you can see<br>' +
+              '👋 Name 5 things you can touch<br>' +
+              '😂 Send a friend a meme<br>' +
+              '🏃 Do 10 jumping jacks<br>' +
+              '🧸 Hold something soft<br>' +
+              '🎨 Doodle or color<br>' +
+              '📱 Watch funny videos<br><br>' +
+              'Pick one and try it for 5 minutes.');
+      }
+
+      function exitApp() {
+          logAction('Safety plan closed');
+          if (confirm('Are you feeling safer now? Remember, you can always come back to this tool.')) {
+              // In a real Pi setup, this might minimize or close the app
+              window.close();
+          }
+      }
+
+      // Initialize the app
+      generateLevelButtons();
+      setCrisisLevel(5); // Default level
+
+      // Prevent accidental navigation
+      window.addEventListener('beforeunload', function(e) {
+          if (currentCrisisLevel >= 7) {
+              e.preventDefault();
+              e.returnValue = '';
+          }
+      });
+  </script>
+</body>
+</html>
