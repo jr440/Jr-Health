@@ -1,343 +1,562 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BPD Support Tool - Jesse</title>
-  <style>
-      * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-          -webkit-tap-highlight-color: transparent;
-      }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BPD Support Tool - Jesse</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
+    
+    :root {
+        --crimson-red: #dc143c;
+        --deep-red: #8b0000;
+        --bright-red: #ff1744;
+        --pure-white: #ffffff;
+        --off-white: #f8f9fa;
+        --charcoal: #2c2c2c;
+        --deep-black: #000000;
+        --light-gray: #e0e0e0;
+    }
 
-      body {
-          font-family: 'Arial', sans-serif;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          height: 100vh;
-          overflow: hidden;
-          user-select: none;
-          color: white;
-      }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+    }
 
-      .container {
-          display: flex;
-          flex-direction: column;
-          height: 100vh;
-          padding: 15px;
-      }
+    body {
+        font-family: 'Inter', sans-serif;
+        background: 
+            linear-gradient(135deg, var(--deep-black) 0%, var(--charcoal) 50%, var(--deep-black) 100%);
+        min-height: 100vh;
+        color: var(--pure-white);
+        position: relative;
+    }
 
-      .header {
-          text-align: center;
-          margin-bottom: 15px;
-      }
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+            repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 2px,
+                rgba(220, 20, 60, 0.02) 2px,
+                rgba(220, 20, 60, 0.02) 4px
+            );
+        z-index: -1;
+    }
 
-      .header h1 {
-          font-size: 2.2em;
-          margin-bottom: 5px;
-          text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-      }
+    .container {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        padding: 20px;
+    }
 
-      .header p {
-          font-size: 1.1em;
-          opacity: 0.9;
-      }
+    .header {
+        text-align: center;
+        margin-bottom: 25px;
+        position: relative;
+    }
 
-      .emotion-check {
-          background: rgba(255,255,255,0.15);
-          border-radius: 15px;
-          padding: 15px;
-          margin-bottom: 15px;
-          backdrop-filter: blur(10px);
-      }
+    .header::before {
+        content: '● SUPPORT SYSTEM ACTIVE ●';
+        position: absolute;
+        top: -25px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.8em;
+        color: var(--crimson-red);
+        letter-spacing: 3px;
+        animation: pulse 2s infinite;
+    }
 
-      .emotion-check h2 {
-          text-align: center;
-          margin-bottom: 10px;
-          font-size: 1.2em;
-      }
+    @keyframes pulse {
+        0%, 100% { opacity: 0.7; }
+        50% { opacity: 1; }
+    }
 
-      .emotion-buttons {
-          display: grid;
-          grid-template-columns: repeat(5, 1fr);
-          gap: 8px;
-      }
+    .header h1 {
+        font-size: 2.8em;
+        margin-bottom: 10px;
+        color: var(--pure-white);
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        text-shadow: 
+            2px 2px 0px var(--crimson-red),
+            4px 4px 0px var(--deep-red);
+    }
 
-      .emotion-btn {
-          padding: 10px 5px;
-          border: none;
-          border-radius: 10px;
-          font-size: 0.9em;
-          font-weight: bold;
-          color: white;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          text-align: center;
-      }
+    .header p {
+        font-size: 1.3em;
+        color: var(--light-gray);
+        font-weight: 300;
+        letter-spacing: 1px;
+    }
 
-      .emotion-btn:active {
-          transform: scale(0.95);
-      }
+    .emotion-check {
+        background: 
+            linear-gradient(135deg, 
+                rgba(44, 44, 44, 0.9) 0%, 
+                rgba(0, 0, 0, 0.95) 100%);
+        border-radius: 20px;
+        padding: 25px;
+        margin-bottom: 25px;
+        border: 3px solid var(--crimson-red);
+        box-shadow: 
+            0 0 30px rgba(220, 20, 60, 0.3),
+            inset 0 0 30px rgba(0, 0, 0, 0.5);
+    }
 
-      .emotion-btn.selected {
-          transform: scale(1.05);
-          box-shadow: 0 4px 8px rgba(0,0,0,0.4);
-      }
+    .emotion-check h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 1.5em;
+        color: var(--pure-white);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
 
-      .main-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 12px;
-          flex: 1;
-      }
+    .emotion-buttons {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 12px;
+    }
 
-      .support-card {
-          background: rgba(255,255,255,0.15);
-          border-radius: 15px;
-          padding: 15px;
-          backdrop-filter: blur(10px);
-          border: 2px solid rgba(255,255,255,0.2);
-          cursor: pointer;
-          transition: all 0.3s ease;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          text-align: center;
-          min-height: 120px;
-      }
+    .emotion-btn {
+        padding: 15px 10px;
+        border: 2px solid var(--light-gray);
+        border-radius: 12px;
+        font-size: 1em;
+        font-weight: 600;
+        color: var(--pure-white);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        font-family: 'Inter', sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        background: 
+            linear-gradient(135deg, 
+                rgba(44, 44, 44, 0.8) 0%, 
+                rgba(0, 0, 0, 0.9) 100%);
+        backdrop-filter: blur(10px);
+    }
 
-      .support-card:hover {
-          background: rgba(255,255,255,0.25);
-          transform: translateY(-2px);
-      }
+    .emotion-btn:hover {
+        transform: translateY(-3px);
+        border-color: var(--crimson-red);
+        background: 
+            linear-gradient(135deg, 
+                rgba(220, 20, 60, 0.2) 0%, 
+                rgba(44, 44, 44, 0.9) 100%);
+        box-shadow: 0 8px 25px rgba(220, 20, 60, 0.4);
+    }
 
-      .support-card:active {
-          transform: scale(0.95);
-      }
+    .emotion-btn:active {
+        transform: scale(0.95);
+    }
 
-      .support-card .emoji {
-          font-size: 2.5em;
-          margin-bottom: 8px;
-      }
+    .emotion-btn.selected {
+        transform: scale(1.05);
+        border: 3px solid var(--bright-red);
+        background: 
+            linear-gradient(135deg, 
+                var(--crimson-red) 0%, 
+                var(--deep-red) 100%);
+        box-shadow: 
+            0 0 30px var(--bright-red),
+            inset 0 0 20px rgba(255, 255, 255, 0.1);
+        color: var(--pure-white);
+        font-weight: 700;
+    }
 
-      .support-card h3 {
-          font-size: 1.1em;
-          margin-bottom: 5px;
-      }
+    .main-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        flex: 1;
+    }
 
-      .support-card p {
-          font-size: 0.9em;
-          opacity: 0.9;
-      }
+    .support-card {
+        background: 
+            linear-gradient(135deg, 
+                rgba(44, 44, 44, 0.9) 0%, 
+                rgba(0, 0, 0, 0.95) 100%);
+        border-radius: 20px;
+        padding: 25px;
+        border: 2px solid var(--light-gray);
+        cursor: pointer;
+        transition: all 0.4s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        min-height: 160px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.5),
+            inset 0 0 20px rgba(255, 255, 255, 0.02);
+    }
 
-      .abandonment { background: linear-gradient(135deg, #ff6b6b, #ee5a52); }
-      .identity { background: linear-gradient(135deg, #4ecdc4, #44a08d); }
-      .impulsivity { background: linear-gradient(135deg, #feca57, #ff9ff3); }
-      .mood { background: linear-gradient(135deg, #48dbfb, #0abde3); }
-      .anger { background: linear-gradient(135deg, #ff9ff3, #feca57); }
-      .emptiness { background: linear-gradient(135deg, #a55eea, #8b5cf6); }
+    .support-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.6s;
+    }
 
-      .modal {
-          display: none;
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(0,0,0,0.8);
-          backdrop-filter: blur(5px);
-          z-index: 1000;
-      }
+    .support-card:hover::before {
+        left: 100%;
+    }
 
-      .modal-content {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          background: linear-gradient(135deg, #667eea, #764ba2);
-          padding: 25px;
-          border-radius: 20px;
-          max-width: 600px;
-          width: 90%;
-          max-height: 80vh;
-          overflow-y: auto;
-          color: white;
-      }
+    .support-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        border-color: var(--crimson-red);
+        background: 
+            linear-gradient(135deg, 
+                rgba(220, 20, 60, 0.15) 0%, 
+                rgba(44, 44, 44, 0.9) 100%);
+        box-shadow: 
+            0 15px 40px rgba(220, 20, 60, 0.3),
+            0 0 60px rgba(220, 20, 60, 0.2),
+            inset 0 0 30px rgba(255, 255, 255, 0.05);
+    }
 
-      .modal-content h3 {
-          margin-bottom: 15px;
-          font-size: 1.6em;
-          text-align: center;
-      }
+    .support-card:active {
+        transform: scale(0.97);
+    }
 
-      .modal-content .technique {
-          background: rgba(255,255,255,0.1);
-          padding: 15px;
-          border-radius: 10px;
-          margin-bottom: 15px;
-      }
+    .support-card .emoji {
+        font-size: 3.5em;
+        margin-bottom: 15px;
+        filter: drop-shadow(0 0 10px var(--crimson-red));
+    }
 
-      .modal-content .technique h4 {
-          margin-bottom: 10px;
-          color: #ffd700;
-      }
+    .support-card h3 {
+        font-size: 1.3em;
+        margin-bottom: 10px;
+        color: var(--pure-white);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
 
-      .modal-content .technique p {
-          line-height: 1.5;
-          margin-bottom: 8px;
-      }
+    .support-card p {
+        font-size: 1.1em;
+        color: var(--light-gray);
+        font-weight: 300;
+    }
 
-      .modal-content .technique ul {
-          margin-left: 20px;
-          margin-bottom: 10px;
-      }
+    .abandonment { border-left: 4px solid var(--crimson-red); }
+    .identity { border-left: 4px solid var(--pure-white); }
+    .impulsivity { border-left: 4px solid var(--bright-red); }
+    .mood { border-left: 4px solid var(--crimson-red); }
+    .anger { border-left: 4px solid var(--deep-red); }
+    .emptiness { border-left: 4px solid var(--light-gray); }
 
-      .modal-content .technique li {
-          margin-bottom: 5px;
-      }
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(10px);
+        z-index: 1000;
+    }
 
-      .close-btn {
-          background: #ff6b6b;
-          color: white;
-          border: none;
-          padding: 12px 25px;
-          border-radius: 25px;
-          font-size: 1.1em;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          display: block;
-          margin: 20px auto 0;
-      }
+    .modal-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: 
+            linear-gradient(135deg, 
+                rgba(44, 44, 44, 0.95) 0%, 
+                rgba(0, 0, 0, 0.98) 100%);
+        padding: 35px;
+        border-radius: 25px;
+        max-width: 700px;
+        width: 90%;
+        max-height: 85vh;
+        overflow-y: auto;
+        color: var(--pure-white);
+        border: 3px solid var(--crimson-red);
+        box-shadow: 
+            0 0 50px rgba(220, 20, 60, 0.4),
+            inset 0 0 50px rgba(0, 0, 0, 0.7);
+    }
 
-      .close-btn:hover {
-          background: #ee5a52;
-          transform: translateY(-2px);
-      }
+    .modal-content h3 {
+        margin-bottom: 25px;
+        font-size: 2em;
+        text-align: center;
+        color: var(--pure-white);
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-shadow: 2px 2px 0px var(--crimson-red);
+    }
 
-      .set-reminder {
-          position: fixed;
-          bottom: 20px;
-          left: 50%;
-          transform: translateX(-50%);
-          background: rgba(255,255,255,0.2);
-          padding: 10px 20px;
-          border-radius: 25px;
-          backdrop-filter: blur(10px);
-          font-size: 0.9em;
-          text-align: center;
-      }
+    .modal-content .technique {
+        background: 
+            linear-gradient(135deg, 
+                rgba(44, 44, 44, 0.6) 0%, 
+                rgba(0, 0, 0, 0.8) 100%);
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        border-left: 4px solid var(--crimson-red);
+        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+    }
 
-      .breathing-circle {
-          width: 150px;
-          height: 150px;
-          border: 4px solid #ffd700;
-          border-radius: 50%;
-          margin: 20px auto;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 1.2em;
-          animation: breathe 12s infinite;
-      }
+    .modal-content .technique h4 {
+        margin-bottom: 15px;
+        color: var(--pure-white);
+        font-weight: 700;
+        font-size: 1.2em;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
 
-      @keyframes breathe {
-          0%, 100% { transform: scale(1); border-color: #ffd700; }
-          33% { transform: scale(1.3); border-color: #ff6b6b; }
-          66% { transform: scale(1.3); border-color: #4ecdc4; }
-      }
+    .modal-content .technique p {
+        line-height: 1.6;
+        margin-bottom: 12px;
+        color: var(--light-gray);
+        font-weight: 300;
+    }
 
-      .exit-btn {
-          position: fixed;
-          top: 15px;
-          right: 15px;
-          background: rgba(255,255,255,0.2);
-          border: none;
-          color: white;
-          padding: 8px 12px;
-          border-radius: 8px;
-          cursor: pointer;
-          font-size: 1em;
-      }
+    .modal-content .technique ul {
+        margin-left: 25px;
+        margin-bottom: 15px;
+    }
 
-      /* Emotion colors */
-      .overwhelmed { background: linear-gradient(135deg, #8e44ad, #6c3483); }
-      .angry { background: linear-gradient(135deg, #e74c3c, #c0392b); }
-      .empty { background: linear-gradient(135deg, #34495e, #2c3e50); }
-      .abandoned { background: linear-gradient(135deg, #f39c12, #e67e22); }
-      .confused { background: linear-gradient(135deg, #3498db, #2980b9); }
-  </style>
+    .modal-content .technique li {
+        margin-bottom: 8px;
+        color: var(--off-white);
+        font-weight: 300;
+        line-height: 1.5;
+    }
+
+    .close-btn {
+        background: linear-gradient(135deg, var(--crimson-red) 0%, var(--deep-red) 100%);
+        color: var(--pure-white);
+        border: 2px solid var(--pure-white);
+        padding: 15px 35px;
+        border-radius: 30px;
+        font-size: 1.2em;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: block;
+        margin: 30px auto 0;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        box-shadow: 0 0 25px rgba(220, 20, 60, 0.5);
+    }
+
+    .close-btn:hover {
+        background: linear-gradient(135deg, var(--pure-white) 0%, var(--light-gray) 100%);
+        color: var(--deep-black);
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 8px 30px rgba(220, 20, 60, 0.6);
+    }
+
+    .set-reminder {
+        position: fixed;
+        bottom: 25px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: 
+            linear-gradient(135deg, 
+                rgba(44, 44, 44, 0.9) 0%, 
+                rgba(0, 0, 0, 0.95) 100%);
+        padding: 15px 30px;
+        border-radius: 30px;
+        backdrop-filter: blur(10px);
+        font-size: 1.1em;
+        text-align: center;
+        border: 2px solid var(--crimson-red);
+        box-shadow: 0 0 25px rgba(220, 20, 60, 0.3);
+        color: var(--pure-white);
+        font-weight: 300;
+        letter-spacing: 1px;
+    }
+
+    .breathing-circle {
+        width: 200px;
+        height: 200px;
+        border: 4px solid var(--crimson-red);
+        border-radius: 50%;
+        margin: 30px auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4em;
+        animation: breathe 12s infinite;
+        background: 
+            radial-gradient(circle, 
+                rgba(220, 20, 60, 0.1) 0%, 
+                rgba(0, 0, 0, 0.8) 70%);
+        color: var(--pure-white);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        box-shadow: 
+            0 0 40px var(--crimson-red),
+            inset 0 0 30px rgba(0, 0, 0, 0.5);
+    }
+
+    @keyframes breathe {
+        0%, 100% { 
+            transform: scale(1); 
+            border-color: var(--crimson-red);
+            box-shadow: 0 0 40px var(--crimson-red);
+        }
+        33% { 
+            transform: scale(1.3); 
+            border-color: var(--bright-red);
+            box-shadow: 0 0 60px var(--bright-red);
+        }
+        66% { 
+            transform: scale(1.3); 
+            border-color: var(--pure-white);
+            box-shadow: 0 0 60px var(--pure-white);
+        }
+    }
+
+    .exit-btn {
+        position: fixed;
+        top: 25px;
+        right: 25px;
+        background: linear-gradient(135deg, var(--crimson-red) 0%, var(--deep-red) 100%);
+        border: 2px solid var(--pure-white);
+        color: var(--pure-white);
+        padding: 12px 18px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 1.2em;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 20px rgba(220, 20, 60, 0.4);
+    }
+
+    .exit-btn:hover {
+        background: linear-gradient(135deg, var(--pure-white) 0%, var(--light-gray) 100%);
+        color: var(--deep-black);
+        transform: scale(1.1);
+        box-shadow: 0 0 30px rgba(220, 20, 60, 0.6);
+    }
+
+    /* Emotion-specific styling */
+    .overwhelmed { 
+        background: linear-gradient(135deg, rgba(139, 0, 0, 0.3), rgba(44, 44, 44, 0.9)); 
+        border-color: var(--deep-red);
+    }
+    .angry { 
+        background: linear-gradient(135deg, rgba(220, 20, 60, 0.3), rgba(44, 44, 44, 0.9)); 
+        border-color: var(--crimson-red);
+    }
+    .empty { 
+        background: linear-gradient(135deg, rgba(224, 224, 224, 0.1), rgba(0, 0, 0, 0.9)); 
+        border-color: var(--light-gray);
+    }
+    .abandoned { 
+        background: linear-gradient(135deg, rgba(255, 23, 68, 0.2), rgba(44, 44, 44, 0.9)); 
+        border-color: var(--bright-red);
+    }
+    .confused { 
+        background: linear-gradient(135deg, rgba(248, 249, 250, 0.1), rgba(44, 44, 44, 0.9)); 
+        border-color: var(--off-white);
+    }
+</style>
 </head>
 <body>
-  <div class="container">
-      <button class="exit-btn" onclick="exitApp()">❌</button>
-      
-      <div class="header">
-          <h1>🛡️ BPD Support Tool</h1>
-          <p>You're not alone, Jesse. Let's work through this together.</p>
-      </div>
+<div class="container">
+    <button class="exit-btn" onclick="exitApp()">✕</button>
+    
+    <div class="header">
+        <h1>🛡️ BPD Support Tool</h1>
+        <p>You're not alone, Jesse. Let's work through this together.</p>
+    </div>
 
-      <div class="emotion-check">
-          <h2>How are you feeling right now?</h2>
-          <div class="emotion-buttons">
-              <button class="emotion-btn overwhelmed" onclick="setEmotion('overwhelmed')">Overwhelmed</button>
-              <button class="emotion-btn angry" onclick="setEmotion('angry')">Angry</button>
-              <button class="emotion-btn empty" onclick="setEmotion('empty')">Empty</button>
-              <button class="emotion-btn abandoned" onclick="setEmotion('abandoned')">Abandoned</button>
-              <button class="emotion-btn confused" onclick="setEmotion('confused')">Confused</button>
-          </div>
-      </div>
+    <div class="emotion-check">
+        <h2>How are you feeling right now?</h2>
+        <div class="emotion-buttons">
+            <button class="emotion-btn overwhelmed" onclick="setEmotion('overwhelmed')">Overwhelmed</button>
+            <button class="emotion-btn angry" onclick="setEmotion('angry')">Angry</button>
+            <button class="emotion-btn empty" onclick="setEmotion('empty')">Empty</button>
+            <button class="emotion-btn abandoned" onclick="setEmotion('abandoned')">Abandoned</button>
+            <button class="emotion-btn confused" onclick="setEmotion('confused')">Confused</button>
+        </div>
+    </div>
 
-      <div class="main-grid">
-          <div class="support-card abandonment" onclick="showSupport('abandonment')">
-              <div class="emoji">🤗</div>
-              <h3>Fear of Abandonment</h3>
-              <p>Coping with separation anxiety</p>
-          </div>
+    <div class="main-grid">
+        <div class="support-card abandonment" onclick="showSupport('abandonment')">
+            <div class="emoji">🤗</div>
+            <h3>Fear of Abandonment</h3>
+            <p>Coping with separation anxiety</p>
+        </div>
 
-          <div class="support-card identity" onclick="showSupport('identity')">
-              <div class="emoji">🪞</div>
-              <h3>Identity Confusion</h3>
-              <p>"Who am I?" support</p>
-          </div>
+        <div class="support-card identity" onclick="showSupport('identity')">
+            <div class="emoji">🪞</div>
+            <h3>Identity Confusion</h3>
+            <p>"Who am I?" support</p>
+        </div>
 
-          <div class="support-card impulsivity" onclick="showSupport('impulsivity')">
-              <div class="emoji">⚡</div>
-              <h3>Impulsive Urges</h3>
-              <p>Before you act, try this</p>
-          </div>
+        <div class="support-card impulsivity" onclick="showSupport('impulsivity')">
+            <div class="emoji">⚡</div>
+            <h3>Impulsive Urges</h3>
+            <p>Before you act, try this</p>
+        </div>
 
-          <div class="support-card mood" onclick="showSupport('mood')">
-              <div class="emoji">🎭</div>
-              <h3>Mood Swings</h3>
-              <p>Riding the emotional waves</p>
-          </div>
+        <div class="support-card mood" onclick="showSupport('mood')">
+            <div class="emoji">🎭</div>
+            <h3>Mood Swings</h3>
+            <p>Riding the emotional waves</p>
+        </div>
 
-          <div class="support-card anger" onclick="showSupport('anger')">
-              <div class="emoji">🔥</div>
-              <h3>Intense Anger</h3>
-              <p>Cooling down strategies</p>
-          </div>
+        <div class="support-card anger" onclick="showSupport('anger')">
+            <div class="emoji">🔥</div>
+            <h3>Intense Anger</h3>
+            <p>Cooling down strategies</p>
+        </div>
 
-          <div class="support-card emptiness" onclick="showSupport('emptiness')">
-              <div class="emoji">🕳️</div>
-              <h3>Feeling Empty</h3>
-              <p>Filling the void</p>
-          </div>
-      </div>
+        <div class="support-card emptiness" onclick="showSupport('emptiness')">
+            <div class="emoji">🕳️</div>
+            <h3>Feeling Empty</h3>
+            <p>Filling the void</p>
+        </div>
+    </div>
 
-      <div class="set-reminder">
-          💡 Remember: Support (I care), Empathy (I understand), Truth (reality check)
-      </div>
-  </div>
+    <div class="set-reminder">
+        💡 Remember: Support (I care), Empathy (I understand), Truth (reality check)
+    </div>
+</div>
 
-  <!-- Modal -->
-  <div id="modal" class="modal">
-      <div class="modal-content" id="modalContent">
-          <!-- Content will be inserted here -->
-      </div>
-  </div>
+<!-- Modal -->
+<div id="modal" class="modal">
+    <div class="modal-content" id="modalContent">
+        <!-- Content will be inserted here -->
+    </div>
+</div>
 
   <script>
       let currentEmotion = null;
