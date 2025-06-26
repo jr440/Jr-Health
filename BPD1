@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEURO-SUPPORT // BPD STABILIZER</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap');
+    
+    :root {
+        --neon-blue: #00eeff;
+        --neon-pink: #ff00ff;
+        --neon-purple: #9d00ff;
+        --matrix-green: #00ff41;
+        --deep-void: #050507;
+        --grid-gray: #1a1a25;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+        font-family: 'Rajdhani', sans-serif;
+        background-color: var(--deep-void);
+        color: var(--neon-blue);
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+            linear-gradient(rgba(10, 10, 25, 0.75), rgba(10, 10, 25, 0.75)),
+            repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 1px,
+                rgba(0, 238, 255, 0.05) 1px,
+                rgba(0, 238, 255, 0.05) 2px
+            );
+        z-index: -1;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 25px;
+        position: relative;
+        padding: 20px 0;
+        border-bottom: 1px solid var(--neon-blue);
+    }
+
+    .header::before {
+        content: '● NEURAL INTERFACE ACTIVE ●';
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: 'Orbitron', monospace;
+        font-size: 0.8em;
+        color: var(--matrix-green);
+        letter-spacing: 3px;
+        text-shadow: 0 0 8px var(--matrix-green);
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 0.6; }
+        50% { opacity: 1; }
+    }
+
+    .header h1 {
+        font-size: 2.8em;
+        margin-bottom: 10px;
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 900;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        background: linear-gradient(to right, var(--neon-blue), var(--neon-purple));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 0 0 15px rgba(0, 238, 255, 0.5);
+    }
+
+    .header p {
+        font-size: 1.3em;
+        color: var(--neon-blue);
+        font-weight: 300;
+        letter-spacing: 2px;
+    }
+
+    .emotion-check {
+        background: rgba(15, 15, 30, 0.8);
+        border-radius: 8px;
+        padding: 25px;
+        margin-bottom: 25px;
+        border: 1px solid var(--neon-blue);
+        box-shadow: 
+            0 0 15px rgba(0, 238, 255, 0.3),
+            inset 0 0 20px rgba(0, 0, 0, 0.5);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .emotion-check::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: var(--neon-pink);
+        box-shadow: 0 0 15px var(--neon-pink);
+        animation: scanline 8s linear infinite;
+    }
+
+    @keyframes scanline {
+        0% { top: 0; }
+        100% { top: 100%; }
+    }
+
+    .emotion-check h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 1.8em;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        color: var(--neon-purple);
+        text-shadow: 0 0 10px var(--neon-purple);
+    }
+
+    .emotion-buttons {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 15px;
+    }
+
+    .emotion-btn {
+        padding: 15px 10px;
+        border: 1px solid var(--neon-blue);
+        border-radius: 4px;
+        font-size: 1.1em;
+        font-weight: 500;
+        color: var(--neon-blue);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        font-family: 'Rajdhani', sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        background: rgba(10, 10, 20, 0.7);
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+    }
+
+    .emotion-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 238, 255, 0.2), transparent);
+        transition: 0.5s;
+        z-index: -1;
+    }
+
+    .emotion-btn:hover {
+        background: rgba(30, 10, 40, 0.5);
+        box-shadow: 0 0 15px var(--neon-purple);
+        color: var(--neon-pink);
+        transform: translateY(-3px);
+    }
+
+    .emotion-btn:hover::before {
+        left: 100%;
+    }
+
+    .emotion-btn.selected {
+        background: rgba(157, 0, 255, 0.2);
+        border: 1px solid var(--neon-pink);
+        box-shadow: 0 0 25px var(--neon-pink);
+        color: white;
+        transform: scale(1.05);
+    }
+
+    .main-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+        flex: 1;
+    }
+
+    .support-card {
+        background: rgba(15, 15, 30, 0.8);
+        border-radius: 8px;
+        padding: 25px;
+        border: 1px solid var(--neon-blue);
+        cursor: pointer;
+        transition: all 0.4s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        min-height: 180px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 
+            0 0 15px rgba(0, 238, 255, 0.2),
+            inset 0 0 10px rgba(0, 0, 0, 0.7);
+    }
+
+    .support-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: var(--neon-pink);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.5s ease;
+    }
+
+    .support-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .support-card:hover {
+        transform: translateY(-8px);
+        border-color: var(--neon-pink);
+        box-shadow: 
+            0 0 25px var(--neon-pink),
+            inset 0 0 20px rgba(0, 0, 0, 0.8);
+    }
+
+    .support-card:active {
+        transform: scale(0.97);
+    }
+
+    .support-card .emoji {
+        font-size: 3.5em;
+        margin-bottom: 15px;
+        text-shadow: 0 0 15px var(--neon-blue);
+    }
+
+    .support-card h3 {
+        font-size: 1.4em;
+        margin-bottom: 10px;
+        color: var(--neon-blue);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-family: 'Orbitron', sans-serif;
+    }
+
+    .support-card p {
+        font-size: 1.1em;
+        color: var(--matrix-green);
+        font-weight: 300;
+    }
+
+    .abandonment { border-top: 3px solid var(--neon-pink); }
+    .identity { border-top: 3px solid var(--neon-blue); }
+    .impulsivity { border-top: 3px solid var(--matrix-green); }
+    .mood { border-top: 3px solid var(--neon-purple); }
+    .anger { border-top: 3px solid #ff003c; }
+    .emptiness { border-top: 3px solid #00eeff; }
+
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(5, 5, 10, 0.95);
+        backdrop-filter: blur(10px);
+        z-index: 1000;
+    }
+
+    .modal-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(10, 10, 20, 0.95);
+        padding: 35px;
+        border-radius: 8px;
+        max-width: 700px;
+        width: 90%;
+        max-height: 85vh;
+        overflow-y: auto;
+        border: 1px solid var(--neon-purple);
+        box-shadow: 
+            0 0 40px rgba(157, 0, 255, 0.5),
+            inset 0 0 30px rgba(0, 0, 0, 0.8);
+    }
+
+    .modal-content h3 {
+        margin-bottom: 25px;
+        font-size: 2em;
+        text-align: center;
+        color: var(--neon-blue);
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        font-family: 'Orbitron', sans-serif;
+        text-shadow: 0 0 10px var(--neon-blue);
+    }
+
+    .modal-content .technique {
+        background: rgba(20, 20, 35, 0.7);
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        border-left: 3px solid var(--matrix-green);
+        position: relative;
+    }
+
+    .modal-content .technique::before {
+        content: '▶';
+        position: absolute;
+        left: -15px;
+        top: 10px;
+        color: var(--matrix-green);
+        text-shadow: 0 0 10px var(--matrix-green);
+    }
+
+    .modal-content .technique h4 {
+        margin-bottom: 15px;
+        color: var(--neon-pink);
+        font-weight: 700;
+        font-size: 1.4em;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-family: 'Orbitron', sans-serif;
+    }
+
+    .modal-content .technique p {
+        line-height: 1.6;
+        margin-bottom: 12px;
+        color: var(--neon-blue);
+        font-weight: 300;
+    }
+
+    .modal-content .technique ul {
+        margin-left: 25px;
+        margin-bottom: 15px;
+    }
+
+    .modal-content .technique li {
+        margin-bottom: 8px;
+        color: var(--matrix-green);
+        font-weight: 300;
+        line-height: 1.5;
+        position: relative;
+    }
+
+    .modal-content .technique li::before {
+        content: '■';
+        color: var(--neon-purple);
+        position: absolute;
+        left: -20px;
+    }
+
+    .close-btn {
+        background: rgba(157, 0, 255, 0.2);
+        color: var(--neon-blue);
+        border: 1px solid var(--neon-blue);
+        padding: 15px 35px;
+        border-radius: 0;
+        font-size: 1.2em;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: block;
+        margin: 30px auto 0;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        font-family: 'Orbitron', sans-serif;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .close-btn:hover {
+        background: rgba(255, 0, 255, 0.3);
+        color: white;
+        box-shadow: 0 0 25px var(--neon-pink);
+        border-color: var(--neon-pink);
+    }
+
+    .set-reminder {
+        position: fixed;
+        bottom: 25px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(15, 15, 30, 0.9);
+        padding: 15px 30px;
+        border-radius: 0;
+        font-size: 1.1em;
+        text-align: center;
+        border: 1px solid var(--matrix-green);
+        color: var(--matrix-green);
+        font-weight: 500;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+    }
+
+    .breathing-circle {
+        width: 200px;
+        height: 200px;
+        border: 2px solid var(--neon-blue);
+        border-radius: 50%;
+        margin: 30px auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4em;
+        animation: breathe 12s infinite;
+        background: rgba(0, 0, 0, 0.5);
+        color: var(--neon-blue);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-family: 'Orbitron', sans-serif;
+        box-shadow: 
+            0 0 40px rgba(0, 238, 255, 0.5),
+            inset 0 0 30px rgba(0, 0, 0, 0.8);
+        position: relative;
+    }
+
+    .breathing-circle::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: 2px solid transparent;
+        border-top-color: var(--neon-pink);
+        animation: spin 3s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @keyframes breathe {
+        0%, 100% { 
+            transform: scale(1); 
+            box-shadow: 0 0 40px rgba(0, 238, 255, 0.5);
+        }
+        33% { 
+            transform: scale(1.3); 
+            box-shadow: 0 0 60px var(--neon-pink);
+        }
+        66% { 
+            transform: scale(1.3); 
+            box-shadow: 0 0 60px var(--matrix-green);
+        }
+    }
+
+    .exit-btn {
+        position: fixed;
+        top: 25px;
+        right: 25px;
+        background: transparent;
+        border: 1px solid var(--neon-pink);
+        color: var(--neon-pink);
+        padding: 12px 18px;
+        border-radius: 0;
+        cursor: pointer;
+        font-size: 1.2em;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        font-family: 'Orbitron', sans-serif;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    .exit-btn:hover {
+        background: rgba(255, 0, 255, 0.2);
+        box-shadow: 0 0 25px var(--neon-pink);
+        transform: scale(1.1);
+    }
+
+    /* Emotion-specific styling */
+    .overwhelmed { 
+        border-color: var(--neon-purple);
+        box-shadow: 0 0 15px var(--neon-purple);
+    }
+    .angry { 
+        border-color: #ff003c;
+        box-shadow: 0 0 15px #ff003c;
+    }
+    .empty { 
+        border-color: var(--neon-blue);
+        box-shadow: 0 0 15px var(--neon-blue);
+    }
+    .abandoned { 
+        border-color: var(--neon-pink);
+        box-shadow: 0 0 15px var(--neon-pink);
+    }
+    .confused { 
+        border-color: var(--matrix-green);
+        box-shadow: 0 0 15px var(--matrix-green);
+    }
+
+    /* Glitch effect for headers */
+    .glitch {
+        position: relative;
+    }
+    .glitch::before,
+    .glitch::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+    .glitch::before {
+        left: 2px;
+        text-shadow: -2px 0 #ff00c1;
+        clip: rect(44px, 450px, 56px, 0);
+        animation: glitch-anim 5s infinite linear alternate-reverse;
+    }
+    .glitch::after {
+        left: -2px;
+        text-shadow: -2px 0 #00fff9;
+        clip: rect(44px, 450px, 56px, 0);
+        animation: glitch-anim2 5s infinite linear alternate-reverse;
+    }
+
+    @keyframes glitch-anim {
+        0% { clip: rect(42px, 9999px, 44px, 0); }
+        10% { clip: rect(12px, 9999px, 59px, 0); }
+        20% { clip: rect(48px, 9999px, 29px, 0); }
+        30% { clip: rect(42px, 9999px, 73px, 0); }
+        40% { clip: rect(63px, 9999px, 27px, 0); }
+        50% { clip: rect(34px, 9999px, 55px, 0); }
+        60% { clip: rect(58px, 9999px, 30px, 0); }
+        70% { clip: rect(26px, 9999px, 65px, 0); }
+        80% { clip: rect(10px, 9999px, 2px, 0); }
+        90% { clip: rect(46px, 9999px, 38px, 0); }
+        100% { clip: rect(62px, 9999px, 58px, 0); }
+    }
+
+    @keyframes glitch-anim2 {
+        0% { clip: rect(65px, 9999px, 100px, 0); }
+        10% { clip: rect(52px, 9999px, 74px, 0); }
+        20% { clip: rect(79px, 9999px, 85px, 0); }
+        30% { clip: rect(75px, 9999px, 5px, 0); }
+        40% { clip: rect(67px, 9999px, 61px, 0); }
+        50% { clip: rect(14px, 9999px, 79px, 0); }
+        60% { clip: rect(73px, 9999px, 58px, 0); }
+        70% { clip: rect(2px, 9999px, 68px, 0); }
+        80% { clip: rect(44px, 9999px, 34px, 0); }
+        90% { clip: rect(11px, 9999px, 26px, 0); }
+        100% { clip: rect(93px, 9999px, 96px, 0); }
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <button class="exit-btn" onclick="exitApp()">TERMINATE</button>
+    
+    <div class="header">
+        <h1 class="glitch" data-text="NEURO-STABILIZER">NEURO-STABILIZER</h1>
+        <p>USER: JESSE // STATUS: CONNECTED</p>
+    </div>
+
+    <div class="emotion-check">
+        <h2>CURRENT NEURO-EMOTIONAL STATE</h2>
+        <div class="emotion-buttons">
+            <button class="emotion-btn overwhelmed" onclick="setEmotion('overwhelmed')">OVERLOAD</button>
+            <button class="emotion-btn angry" onclick="setEmotion('angry')">CORE HEAT</button>
+            <button class="emotion-btn empty" onclick="setEmotion('empty')">VOID STATE</button>
+            <button class="emotion-btn abandoned" onclick="setEmotion('abandoned')">ISOLATION PROTOCOL</button>
+            <button class="emotion-btn confused" onclick="setEmotion('confused')">SYSTEM ERROR</button>
+        </div>
+    </div>
+
+    <div class="main-grid">
+        <div class="support-card abandonment" onclick="showSupport('abandonment')">
+            <div class="emoji">🤖</div>
+            <h3>ABANDONMENT PROTOCOL</h3>
+            <p>CONNECTION STABILIZATION</p>
+        </div>
+
+        <div class="support-card identity" onclick="showSupport('identity')">
+            <div class="emoji">🖥️</div>
+            <h3>IDENTITY RECALIBRATION</h3>
+            <p>"SELF" DIAGNOSTICS</p>
+        </div>
+
+        <div class="support-card impulsivity" onclick="showSupport('impulsivity')">
+            <div class="emoji">⚡</div>
+            <h3>IMPULSE CONTROL</h3>
+            <p>ACTION INTERCEPT</p>
+        </div>
+
+        <div class="support-card mood" onclick="showSupport('mood')">
+            <div class="emoji">📈</div>
+            <h3>MOOD OSCILLATION</h3>
+            <p>FREQUENCY MODULATION</p>
+        </div>
+
+        <div class="support-card anger" onclick="showSupport('anger')">
+            <div class="emoji">🔥</div>
+            <h3>THERMAL REGULATION</h3>
+            <p>COOLANT SYSTEMS</p>
+        </div>
+
+        <div class="support-card emptiness" onclick="showSupport('emptiness')">
+            <div class="emoji">🕳️</div>
+            <h3>VOID FILL ROUTINES</h3>
+            <p>DATA STREAM INJECTION</p>
+        </div>
+    </div>
+
+    <div class="set-reminder">
+        SYSTEM ALERT: STABILIZE · CONNECT · REBOOT
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="modal" class="modal">
+    <div class="modal-content" id="modalContent">
+        <!-- Content will be inserted here -->
+    </div>
+</div>
+
+  <script>
+      let currentEmotion = null;
+      let supportLog = JSON.parse(localStorage.getItem('bpdSupportLog') || '[]');
+
+      function setEmotion(emotion) {
+          currentEmotion = emotion;
+          
+          // Update button appearance
+          document.querySelectorAll('.emotion-btn').forEach(btn => {
+              btn.classList.remove('selected');
+          });
+          event.target.classList.add('selected');
+          
+          logAction(`Feeling: ${emotion}`);
+          
+          // Provide immediate support based on emotion
+          let message = getEmotionSupport(emotion);
+          setTimeout(() => {
+              showModal('Immediate Support', message);
+          }, 500);
+      }
+
+      function getEmotionSupport(emotion) {
+          const support = {
+              overwhelmed: "🫂 **You're feeling overwhelmed right now, and that's okay.**\n\n**Support:** I care about you and want to help you through this.\n**Empathy:** I understand everything feels like too much right now.\n**Truth:** This feeling will pass. You've survived overwhelming moments before.\n\n**Try:** Take 5 deep breaths. Focus on one thing at a time.",
+              angry: "🔥 **Your anger is valid, but let's channel it safely.**\n\n**Support:** Your feelings matter, and I'm here with you.\n**Empathy:** I understand you're frustrated and things feel unfair.\n**Truth:** Acting on anger impulsively often makes things worse.\n\n**Try:** Count to 10. Squeeze an ice cube. Go for a walk.",
+              empty: "🕳️ **The emptiness feels overwhelming, but you're not actually empty.**\n\n**Support:** You have value and worth, even when you can't feel it.\n**Empathy:** I understand how painful and scary this emptiness feels.\n**Truth:** This is a symptom, not your reality. You matter.\n\n**Try:** Call someone. Listen to music. Do something creative.",
+              abandoned: "🤗 **You're not alone, even when it feels like everyone leaves.**\n\n**Support:** I'm here with you right now through this tool.\n**Empathy:** I understand how terrifying abandonment feels.\n**Truth:** People caring about you doesn't mean they'll never be busy or unavailable.\n\n**Try:** Use a transitional object. Text a friend. Remember past support.",
+              confused: "🧭 **It's okay not to know who you are right now.**\n\n**Support:** You're valuable regardless of how clear your identity feels.\n**Empathy:** I understand how disorienting and scary this confusion is.\n**Truth:** Identity develops over time. You don't need to have it all figured out today.\n\n**Try:** Write down 3 things you know about yourself. Do an activity you enjoy."
+          };
+          return support[emotion] || "You're doing great by checking in with yourself. 💙";
+      }
+
+      function showSupport(type) {
+          logAction(`Accessed ${type} support`);
+          
+          const content = {
+              abandonment: `
+                  <h3>🤗 Coping with Fear of Abandonment</h3>
+                  
+                  <div class="technique">
+                      <h4>Use Transitional Objects</h4>
+                      <p>Like Princess Diana with her stuffed animal, carry something that represents connection:</p>
+                      <ul>
+                          <li>A photo of Amanda or loved ones</li>
+                          <li>A piece of jewelry or clothing item</li>
+                          <li>Play "your song" when feeling alone</li>
+                          <li>Keep a comforting text message saved</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>Prepare for Separations</h4>
+                      <p>Don't avoid discussing upcoming separations. Instead:</p>
+                      <ul>
+                          <li>Talk about it beforehand</li>
+                          <li>Plan something positive before the separation</li>
+                          <li>Arrange alternative comfort sources</li>
+                          <li>Set realistic expectations for contact</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>SET Response for Yourself</h4>
+                      <p><strong>Support:</strong> "I care about maintaining my relationships."</p>
+                      <p><strong>Empathy:</strong> "I understand I'm scared of being left alone."</p>
+                      <p><strong>Truth:</strong> "People can love me and still need space sometimes."</p>
+                  </div>
+              `,
+              
+              identity: `
+                  <h3>🪞 Working Through Identity Confusion</h3>
+                  
+                  <div class="technique">
+                      <h4>Acknowledge the "No-Win" Feeling</h4>
+                      <p>Sometimes you feel frustrated no matter what you choose. This is normal with BPD:</p>
+                      <ul>
+                          <li>Recognize when you're in a "damned if you do, damned if you don't" situation</li>
+                          <li>It's okay to feel conflicted about decisions</li>
+                          <li>You don't have to have all the answers right now</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>Use the Deflection Technique</h4>
+                      <p>When unsure about your stance: "I'm not sure about that. What do you think?"</p>
+                      <p>This gives you time to process without committing to something you're uncertain about.</p>
+                  </div>
+
+                  <div class="technique">
+                      <h4>Join Team Activities</h4>
+                      <p>Participate in group activities that help define identity:</p>
+                      <ul>
+                          <li>Sports groups or fitness classes</li>
+                          <li>Community projects or volunteering</li>
+                          <li>Creative workshops or classes</li>
+                          <li>Support groups</li>
+                      </ul>
+                  </div>
+              `,
+              
+              impulsivity: `
+                  <h3>⚡ Managing Impulsive Urges</h3>
+                  
+                  <div class="technique">
+                      <h4>Predict the Pattern</h4>
+                      <p>Impulsive behaviors often follow patterns:</p>
+                      <ul>
+                          <li>Notice when you're feeling "too stable" or bored</li>
+                          <li>Recognize the build-up of pressure or tension</li>
+                          <li>Remember: impulsive urges often come when life is going well</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>Walk Through Consequences</h4>
+                      <p>Before acting, mentally walk through what will happen:</p>
+                      <ul>
+                          <li>"If I do this, then..."</li>
+                          <li>"How will I feel tomorrow?"</li>
+                          <li>"What happened last time I did this?"</li>
+                          <li>"Is this solving the real problem?"</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>Focus on the Underlying Feeling</h4>
+                      <p>Ask yourself:</p>
+                      <ul>
+                          <li>"What am I really angry about?"</li>
+                          <li>"What am I trying to avoid feeling?"</li>
+                          <li>"What do I need right now instead?"</li>
+                      </ul>
+                  </div>
+              `,
+              
+              mood: `
+                  <h3>🎭 Riding the Mood Swings</h3>
+                  
+                  <div class="technique">
+                      <h4>Procrastinate Productively</h4>
+                      <p>When emotions are high, delay major decisions:</p>
+                      <ul>
+                          <li>"Let me check my schedule first"</li>
+                          <li>"I need to think about this"</li>
+                          <li>"Let me get back to you on that"</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>Recognize the Swing</h4>
+                      <p>When you notice a mood change:</p>
+                      <ul>
+                          <li>Name it: "I'm in a down phase right now"</li>
+                          <li>Take responsibility: "This is my mood, not reality"</li>
+                          <li>Adapt: "I'll try to manage this as best I can"</li>
+                          <li>Communicate: Let others know you're struggling</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>Breathing Exercise</h4>
+                      <div class="breathing-circle">Breathe</div>
+                      <p>Follow the circle: Inhale as it grows, exhale as it shrinks.</p>
+                      <p>4 counts in, 7 counts hold, 8 counts out.</p>
+                  </div>
+              `,
+              
+              anger: `
+                  <h3>🔥 Cooling Down Intense Anger</h3>
+                  
+                  <div class="technique">
+                      <h4>Let the Dust Settle</h4>
+                      <p>When anger hits:</p>
+                      <ul>
+                          <li>Wait for the initial outburst to finish</li>
+                          <li>Take a beat of silence</li>
+                          <li>Don't respond immediately</li>
+                          <li>Let the contrast between loud and quiet sink in</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>De-escalate Yourself</h4>
+                      <p>Physical techniques:</p>
+                      <ul>
+                          <li>Lower your voice (even if others are loud)</li>
+                          <li>Slow your movements</li>
+                          <li>Unclench your fists</li>
+                          <li>Take deep breaths</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>Ice Cube Technique</h4>
+                      <p>Hold an ice cube in your hand:</p>
+                      <ul>
+                          <li>Focus on the cold sensation</li>
+                          <li>Feel it melting</li>
+                          <li>Notice the water dripping</li>
+                          <li>This brings you back to the present</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>Stay Safe</h4>
+                      <p>If you feel like you might hurt yourself or others:</p>
+                      <ul>
+                          <li>Leave the situation immediately</li>
+                          <li>Call someone for support</li>
+                          <li>Use your crisis plan</li>
+                          <li>Remember: This feeling will pass</li>
+                      </ul>
+                  </div>
+              `,
+              
+              emptiness: `
+                  <h3>🕳️ Filling the Emptiness</h3>
+                  
+                  <div class="technique">
+                      <h4>Get Moving</h4>
+                      <p>Physical activity helps combat emptiness:</p>
+                      <ul>
+                          <li>Go for a walk outside</li>
+                          <li>Do jumping jacks or push-ups</li>
+                          <li>Dance to music</li>
+                          <li>Clean or organize something</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>Engage Your Mind</h4>
+                      <p>Intellectual stimulation can fill the void:</p>
+                      <ul>
+                          <li>Read something interesting</li>
+                          <li>Learn a new skill online</li>
+                          <li>Do a puzzle or brain game</li>
+                          <li>Write in a journal</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>Connect with Others</h4>
+                      <p>Social engagement combats isolation:</p>
+                      <ul>
+                          <li>Text or call a friend</li>
+                          <li>Join an online community</li>
+                          <li>Volunteer for a cause you care about</li>
+                          <li>Attend a group activity or class</li>
+                      </ul>
+                  </div>
+
+                  <div class="technique">
+                      <h4>Create Something</h4>
+                      <p>Creative expression gives purpose:</p>
+                      <ul>
+                          <li>Draw, paint, or doodle</li>
+                          <li>Write poetry or stories</li>
+                          <li>Make music or sing</li>
+                          <li>Cook or bake something</li>
+                      </ul>
+                  </div>
+              `
+          };
+
+          showModal('', content[type] || 'Support content coming soon...');
+      }
+
+      function showModal(title, content) {
+          const modal = document.getElementById('modal');
+          const modalContent = document.getElementById('modalContent');
+          
+          let html = title ? `<h3>${title}</h3>` : '';
+          html += content;
+          html += `<button class="close-btn" onclick="closeModal()">Close</button>`;
+          
+          modalContent.innerHTML = html;
+          modal.style.display = 'block';
+      }
+
+      function closeModal() {
+          document.getElementById('modal').style.display = 'none';
+      }
+
+      function logAction(action) {
+          const timestamp = new Date().toISOString();
+          const logEntry = {
+              timestamp,
+              action,
+              emotion: currentEmotion
+          };
+          
+          supportLog.push(logEntry);
+          localStorage.setItem('bpdSupportLog', JSON.stringify(supportLog));
+      }
+
+      function exitApp() {
+          logAction('BPD support tool closed');
+          if (confirm('Remember: You\'re doing great by using these tools. Come back anytime you need support.')) {
+              window.close();
+          }
+      }
+
+      // Prevent accidental navigation during emotional distress
+      window.addEventListener('beforeunload', function(e) {
+          if (currentEmotion && ['overwhelmed', 'angry', 'abandoned'].includes(currentEmotion)) {
+              e.preventDefault();
+              e.returnValue = '';
+          }
+      });
+
+      // Auto-save support log every 5 minutes
+      setInterval(() => {
+          localStorage.setItem('bpdSupportLog', JSON.stringify(supportLog));
+      }, 300000);
+  </script>
+</body>
+</html>
