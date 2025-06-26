@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEURO-SUPPORT // BPD STABILIZER</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap');
+    
+    :root {
+        --neon-blue: #00eeff;
+        --neon-pink: #ff00ff;
+        --neon-purple: #9d00ff;
+        --matrix-green: #00ff41;
+        --deep-void: #050507;
+        --grid-gray: #1a1a25;
+        --night-blue: #0a1a2a;
+        --night-purple: #2a0a3a;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+        font-family: 'Rajdhani', sans-serif;
+        background-color: var(--deep-void);
+        color: var(--neon-blue);
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+        transition: background 0.5s ease;
+    }
+
+    body.night-mode {
+        background: linear-gradient(135deg, var(--night-blue), var(--night-purple));
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+            linear-gradient(rgba(10, 10, 25, 0.75), rgba(10, 10, 25, 0.75)),
+            repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 1px,
+                rgba(0, 238, 255, 0.05) 1px,
+                rgba(0, 238, 255, 0.05) 2px
+            );
+        z-index: -1;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 25px;
+        position: relative;
+        padding: 20px 0;
+        border-bottom: 1px solid var(--neon-blue);
+    }
+
+    .header::before {
+        content: '● NEURAL INTERFACE ACTIVE ●';
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: 'Orbitron', monospace;
+        font-size: 0.8em;
+        color: var(--matrix-green);
+        letter-spacing: 3px;
+        text-shadow: 0 0 8px var(--matrix-green);
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 0.6; }
+        50% { opacity: 1; }
+    }
+
+    .header h1 {
+        font-size: 2.8em;
+        margin-bottom: 10px;
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 900;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        background: linear-gradient(to right, var(--neon-blue), var(--neon-purple));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 0 0 15px rgba(0, 238, 255, 0.5);
+    }
+
+    .header p {
+        font-size: 1.3em;
+        color: var(--neon-blue);
+        font-weight: 300;
+        letter-spacing: 2px;
+    }
+
+    .emotion-check {
+        background: rgba(15, 15, 30, 0.8);
+        border-radius: 8px;
+        padding: 25px;
+        margin-bottom: 25px;
+        border: 1px solid var(--neon-blue);
+        box-shadow: 
+            0 0 15px rgba(0, 238, 255, 0.3),
+            inset 0 0 20px rgba(0, 0, 0, 0.5);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .emotion-check::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: var(--neon-pink);
+        box-shadow: 0 0 15px var(--neon-pink);
+        animation: scanline 8s linear infinite;
+    }
+
+    @keyframes scanline {
+        0% { top: 0; }
+        100% { top: 100%; }
+    }
+
+    .emotion-check h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 1.8em;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        color: var(--neon-purple);
+        text-shadow: 0 0 10px var(--neon-purple);
+    }
+
+    .emotion-buttons {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 15px;
+    }
+
+    @media (max-width: 768px) {
+        .emotion-buttons {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    .emotion-btn {
+        padding: 15px 10px;
+        border: 1px solid var(--neon-blue);
+        border-radius: 4px;
+        font-size: 1.1em;
+        font-weight: 500;
+        color: var(--neon-blue);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        font-family: 'Rajdhani', sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        background: rgba(10, 10, 20, 0.7);
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+    }
+
+    .emotion-btn:focus-visible {
+        outline: 2px solid var(--matrix-green);
+        outline-offset: 2px;
+    }
+
+    .emotion-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 238, 255, 0.2), transparent);
+        transition: 0.5s;
+        z-index: -1;
+    }
+
+    .emotion-btn:hover {
+        background: rgba(30, 10, 40, 0.5);
+        box-shadow: 0 0 15px var(--neon-purple);
+        color: var(--neon-pink);
+        transform: translateY(-3px);
+    }
+
+    .emotion-btn:hover::before {
+        left: 100%;
+    }
+
+    .emotion-btn.selected {
+        background: rgba(157, 0, 255, 0.2);
+        border: 1px solid var(--neon-pink);
+        box-shadow: 0 0 25px var(--neon-pink);
+        color: white;
+        transform: scale(1.05);
+    }
+
+    .main-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+        flex: 1;
+    }
+
+    @media (max-width: 768px) {
+        .main-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .support-card {
+        background: rgba(15, 15, 30, 0.8);
+        border-radius: 8px;
+        padding: 25px;
+        border: 1px solid var(--neon-blue);
+        cursor: pointer;
+        transition: all 0.4s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        min-height: 180px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 
+            0 0 15px rgba(0, 238, 255, 0.2),
+            inset 0 0 10px rgba(0, 0, 0, 0.7);
+    }
+
+    .support-card:focus-visible {
+        outline: 2px solid var(--matrix-green);
+        outline-offset: 2px;
+    }
+
+    .support-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: var(--neon-pink);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.5s ease;
+    }
+
+    .support-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .support-card:hover {
+        transform: translateY(-8px);
+        border-color: var(--neon-pink);
+        box-shadow: 
+            0 0 25px var(--neon-pink),
+            inset 0 0 20px rgba(0, 0, 0, 0.8);
+    }
+
+    .support-card:active {
+        transform: scale(0.97);
+    }
+
+    .support-card .emoji {
+        font-size: 3.5em;
+        margin-bottom: 15px;
+        text-shadow: 0 0 15px var(--neon-blue);
+    }
+
+    .support-card h3 {
+        font-size: 1.4em;
+        margin-bottom: 10px;
+        color: var(--neon-blue);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-family: 'Orbitron', sans-serif;
+    }
+
+    .support-card p {
+        font-size: 1.1em;
+        color: var(--matrix-green);
+        font-weight: 300;
+    }
+
+    .abandonment { border-top: 3px solid var(--neon-pink) !important; }
+    .identity { border-top: 3px solid var(--neon-blue) !important; }
+    .impulsivity { border-top: 3px solid var(--matrix-green) !important; }
+    .mood { border-top: 3px solid var(--neon-purple) !important; }
+    .anger { border-top: 3px solid #ff003c !important; }
+    .emptiness { border-top: 3px solid #00eeff !important; }
+
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(5, 5, 10, 0.95);
+        backdrop-filter: blur(10px);
+        z-index: 1000;
+    }
+
+    .modal-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(10, 10, 20, 0.95);
+        padding: 35px;
+        border-radius: 8px;
+        max-width: 700px;
+        width: 90%;
+        max-height: 85vh;
+        overflow-y: auto;
+        border: 1px solid var(--neon-purple);
+        box-shadow: 
+            0 0 40px rgba(157, 0, 255, 0.5),
+            inset 0 0 30px rgba(0, 0, 0, 0.8);
+    }
+
+    .modal-content h3 {
+        margin-bottom: 25px;
+        font-size: 2em;
+        text-align: center;
+        color: var(--neon-blue);
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        font-family: 'Orbitron', sans-serif;
+        text-shadow: 0 0 10px var(--neon-blue);
+    }
+
+    .modal-content .technique {
+        background: rgba(20, 20, 35, 0.7);
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        border-left: 3px solid var(--matrix-green);
+        position: relative;
+    }
+
+    .modal-content .technique::before {
+        content: '▶';
+        position: absolute;
+        left: -15px;
+        top: 10px;
+        color: var(--matrix-green);
+        text-shadow: 0 0 10px var(--matrix-green);
+    }
+
+    .modal-content .technique h4 {
+        margin-bottom: 15px;
+        color: var(--neon-pink);
+        font-weight: 700;
+        font-size: 1.4em;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-family: 'Orbitron', sans-serif;
+    }
+
+    .modal-content .technique p {
+        line-height: 1.6;
+        margin-bottom: 12px;
+        color: var(--neon-blue);
+        font-weight: 300;
+    }
+
+    .modal-content .technique ul {
+        margin-left: 25px;
+        margin-bottom: 15px;
+    }
+
+    .modal-content .technique li {
+        margin-bottom: 8px;
+        color: var(--matrix-green);
+        font-weight: 300;
+        line-height: 1.5;
+        position: relative;
+    }
+
+    .modal-content .technique li::before {
+        content: '■';
+        color: var(--neon-purple);
+        position: absolute;
+        left: -20px;
+    }
+
+    .close-btn {
+        background: rgba(157, 0, 255, 0.2);
+        color: var(--neon-blue);
+        border: 1px solid var(--neon-blue);
+        padding: 15px 35px;
+        border-radius: 0;
+        font-size: 1.2em;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: block;
+        margin: 30px auto 0;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        font-family: 'Orbitron', sans-serif;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .close-btn:focus-visible {
+        outline: 2px solid var(--matrix-green);
+        outline-offset: 2px;
+    }
+
+    .close-btn:hover {
+        background: rgba(255, 0, 255, 0.3);
+        color: white;
+        box-shadow: 0 0 25px var(--neon-pink);
+        border-color: var(--neon-pink);
+    }
+
+    .set-reminder {
+        position: fixed;
+        bottom: 25px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(15, 15, 30, 0.9);
+        padding: 15px 30px;
+        border-radius: 0;
+        font-size: 1.1em;
+        text-align: center;
+        border: 1px solid var(--matrix-green);
+        color: var(--matrix-green);
+        font-weight: 500;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+    }
+
+    .breathing-circle {
+        width: 200px;
+        height: 200px;
+        border: 2px solid var(--neon-blue);
+        border-radius: 50%;
+        margin: 30px auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4em;
+        animation: breathe 12s infinite;
+        background: rgba(0, 0, 0, 0.5);
+        color: var(--neon-blue);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-family: 'Orbitron', sans-serif;
+        box-shadow: 
+            0 0 40px rgba(0, 238, 255, 0.5),
+            inset 0 0 30px rgba(0, 0, 0, 0.8);
+        position: relative;
+    }
+
+    @media (max-width: 480px) {
+        .breathing-circle {
+            width: 150px;
+            height: 150px;
+        }
+    }
+
+    .breathing-circle::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: 2px solid transparent;
+        border-top-color: var(--neon-pink);
+        animation: spin 3s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @keyframes breathe {
+        0%, 100% { 
+            transform: scale(1); 
+            box-shadow: 0 0 40px rgba(0, 238, 255, 0.5);
+        }
+        33% { 
+            transform: scale(1.3); 
+            box-shadow: 0 0 60px var(--neon-pink);
+        }
+        66% { 
+            transform: scale(1.3); 
+            box-shadow: 0 0 60px var(--matrix-green);
+        }
+    }
+
+    .exit-btn {
+        position: fixed;
+        top: 25px;
+        right: 25px;
+        background: transparent;
+        border: 1px solid var(--neon-pink);
+        color: var(--neon-pink);
+        padding: 12px 18px;
+        border-radius: 0;
+        cursor: pointer;
+        font-size: 1.2em;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        font-family: 'Orbitron', sans-serif;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    .exit-btn:focus-visible {
+        outline: 2px solid var(--matrix-green);
+        outline-offset: 2px;
+    }
+
+    .exit-btn:hover {
+        background: rgba(255, 0, 255, 0.2);
+        box-shadow: 0 0 25px var(--neon-pink);
+        transform: scale(1.1);
+    }
+
+    /* Emotion-specific styling */
+    .overwhelmed { 
+        border-color: var(--neon-purple);
+        box-shadow: 0 0 15px var(--neon-purple);
+    }
+    .angry { 
+        border-color: #ff003c;
+        box-shadow: 0 0 15px #ff003c;
+    }
+    .empty { 
+        border-color: var(--neon-blue);
+        box-shadow: 0 0 15px var(--neon-blue);
+    }
+    .abandoned { 
+        border-color: var(--neon-pink);
+        box-shadow: 0 0 15px var(--neon-pink);
+    }
+    .confused { 
+        border-color: var(--matrix-green);
+        box-shadow: 0 0 15px var(--matrix-green);
+    }
+
+    /* Glitch effect for headers */
+    .glitch {
+        position: relative;
+    }
+    .glitch::before,
+    .glitch::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+    .glitch::before {
+        left: 2px;
+        text-shadow: -2px 0 #ff00c1;
+        clip: rect(44px, 450px, 56px, 0);
+        animation: glitch-anim 5s infinite linear alternate-reverse;
+    }
+    .glitch::after {
+        left: -2px;
+        text-shadow: -2px 0 #00fff9;
+        clip: rect(44px, 450px, 56px, 0);
+        animation: glitch-anim2 5s infinite linear alternate-reverse;
+    }
+
+    @keyframes glitch-anim {
+        0% { clip: rect(42px, 9999px, 44px, 0); }
+        10% { clip: rect(12px, 9999px, 59px, 0); }
+        20% { clip: rect(48px, 9999px, 29px, 0); }
+        30% { clip: rect(42px, 9999px, 73px, 0); }
+        40% { clip: rect(63px, 9999px, 27px, 0); }
+        50% { clip: rect(34px, 9999px, 55px, 0); }
+        60% { clip: rect(58px, 9999px, 30px, 0); }
+        70% { clip: rect(26px, 9999px, 65px, 0); }
+        80% { clip: rect(10px, 9999px, 2px, 0); }
+        90% { clip: rect(46px, 9999px, 38px, 0); }
+        100% { clip: rect(62px, 9999px, 58px, 0); }
+    }
+
+    @keyframes glitch-anim2 {
+        0% { clip: rect(65px, 9999px, 100px, 0); }
+        10% { clip: rect(52px, 9999px, 74px, 0); }
+        20% { clip: rect(79px, 9999px, 85px, 0); }
+        30% { clip: rect(75px, 9999px, 5px, 0); }
+        40% { clip: rect(67px, 9999px, 61px, 0); }
+        50% { clip: rect(14px, 9999px, 79px, 0); }
+        60% { clip: rect(73px, 9999px, 58px, 0); }
+        70% { clip: rect(2px, 9999px, 68px, 0); }
+        80% { clip: rect(44px, 9999px, 34px, 0); }
+        90% { clip: rect(11px, 9999px, 26px, 0); }
+        100% { clip: rect(93px, 9999px, 96px, 0); }
+    }
+
+    /* Control Panel */
+    .control-panel {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin: 20px 0;
+    }
+
+    .control-btn {
+        background: rgba(10, 10, 20, 0.7);
+        border: 1px solid var(--neon-blue);
+        color: var(--neon-blue);
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: 'Rajdhani', sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.9em;
+    }
+
+    .control-btn:focus-visible {
+        outline: 2px solid var(--matrix-green);
+        outline-offset: 2px;
+    }
+
+    .control-btn:hover {
+        background: rgba(30, 10, 40, 0.5);
+        box-shadow: 0 0 10px var(--neon-purple);
+        color: var(--neon-pink);
+    }
+
+    .session-timer {
+        text-align: center;
+        font-size: 0.9em;
+        color: var(--matrix-green);
+        margin: 10px 0;
+        font-family: 'Orbitron', sans-serif;
+    }
+
+    .quick-exit {
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        background: rgba(255, 0, 100, 0.3);
+        border: 1px solid #ff003c;
+        color: #ff003c;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        z-index: 100;
+    }
+
+    .quick-exit:hover {
+        background: rgba(255, 0, 100, 0.5);
+        box-shadow: 0 0 15px #ff003c;
+    }
+
+    .printable-log {
+        display: none;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <button class="exit-btn" onclick="exitApp()">TERMINATE</button>
+    
+    <div class="header">
+        <h1 class="glitch" data-text="NEURO-STABILIZER">NEURO-STABILIZER</h1>
+        <p>USER: JESSE // STATUS: CONNECTED</p>
+    </div>
+
+    <div class="control-panel">
+        <button class="control-btn" onclick="toggleNightMode()">
+            <i class="fas fa-moon"></i> NIGHT MODE
+        </button>
+        <button class="control-btn" onclick="printSessionLog()">
+            <i class="fas fa-print"></i> PRINT LOG
+        </button>
+        <button class="control-btn" onclick="showSupport('session')">
+            <i class="fas fa-history"></i> SESSION HISTORY
+        </button>
+    </div>
+    
+    <div class="session-timer" id="sessionTimer">
+        SESSION TIME: 00:00:00
+    </div>
+
+    <div class="emotion-check">
+        <h2>CURRENT NEURO-EMOTIONAL STATE</h2>
+        <div class="emotion-buttons">
+            <button class="emotion-btn overwhelmed" onclick="setEmotion('overwhelmed', event)">OVERLOAD</button>
+            <button class="emotion-btn angry" onclick="setEmotion('angry', event)">CORE HEAT</button>
+            <button class="emotion-btn empty" onclick="setEmotion('empty', event)">VOID STATE</button>
+            <button class="emotion-btn abandoned" onclick="setEmotion('abandoned', event)">ISOLATION PROTOCOL</button>
+            <button class="emotion-btn confused" onclick="setEmotion('confused', event)">SYSTEM ERROR</button>
+        </div>
+    </div>
+
+    <div class="main-grid">
+        <div class="support-card abandonment" onclick="showSupport('abandonment')" tabindex="0">
+            <div class="emoji">🤖</div>
+            <h3>ABANDONMENT PROTOCOL</h3>
+            <p>CONNECTION STABILIZATION</p>
+        </div>
+
+        <div class="support-card identity" onclick="showSupport('identity')" tabindex="0">
+            <div class="emoji">🖥️</div>
+            <h3>IDENTITY RECALIBRATION</h3>
+            <p>"SELF" DIAGNOSTICS</p>
+        </div>
+
+        <div class="support-card impulsivity" onclick="showSupport('impulsivity')" tabindex="0">
+            <div class="emoji">⚡</div>
+            <h3>IMPULSE CONTROL</h3>
+            <p>ACTION INTERCEPT</p>
+        </div>
+
+        <div class="support-card mood" onclick="showSupport('mood')" tabindex="0">
+            <div class="emoji">📈</div>
+            <h3>MOOD OSCILLATION</h3>
+            <p>FREQUENCY MODULATION</p>
+        </div>
+
+        <div class="support-card anger" onclick="showSupport('anger')" tabindex="0">
+            <div class="emoji">🔥</div>
+            <h3>THERMAL REGULATION</h3>
+            <p>COOLANT SYSTEMS</p>
+        </div>
+
+        <div class="support-card emptiness" onclick="showSupport('emptiness')" tabindex="0">
+            <div class="emoji">🕳️</div>
+            <h3>VOID FILL ROUTINES</h3>
+            <p>DATA STREAM INJECTION</p>
+        </div>
+    </div>
+
+    <div class="set-reminder">
+        SYSTEM ALERT: STABILIZE · CONNECT · REBOOT
+    </div>
+    
+    <button class="quick-exit" onclick="quickExit()">
+        <i class="fas fa-power-off"></i> QUICK EXIT
+    </button>
+</div>
+
+<!-- Modal -->
+<div id="modal" class="modal">
+    <div class="modal-content" id="modalContent">
+        <!-- Content will be inserted here -->
+    </div>
+</div>
+
+<!-- Printable Log (Hidden) -->
+<div class="printable-log" id="printableLog"></div>
+
+<script>
+    let currentEmotion = null;
+    let supportLog = JSON.parse(localStorage.getItem('bpdSupportLog') || '[]');
+    let sessionStart = new Date();
+    let timerInterval;
+    
+    // Initialize session timer
+    function startSessionTimer() {
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            const now = new Date();
+            const diff = Math.floor((now - sessionStart) / 1000);
+            const hours = Math.floor(diff / 3600);
+            const minutes = Math.floor((diff % 3600) / 60);
+            const seconds = diff % 60;
+            
+            document.getElementById('sessionTimer').textContent = 
+                `SESSION TIME: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }, 1000);
+    }
+    
+    // Sanitize HTML to prevent XSS
+    function sanitizeHTML(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+    
+    // Set current emotion with event parameter
+    function setEmotion(emotion, event) {
+        currentEmotion = emotion;
+        
+        // Update button appearance
+        document.querySelectorAll('.emotion-btn').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+        event.target.classList.add('selected');
+        
+        logAction(`Feeling: ${emotion}`);
+        
+        // Provide immediate support based on emotion
+        let message = getEmotionSupport(emotion);
+        setTimeout(() => {
+            showModal('Immediate Support', message);
+        }, 500);
+    }
+    
+    // Get support message for emotion
+    function getEmotionSupport(emotion) {
+        const support = {
+            overwhelmed: "🫂 <strong>You're feeling overwhelmed right now, and that's okay.</strong><br><br>" +
+                         "<strong>Support:</strong> I care about you and want to help you through this.<br>" +
+                         "<strong>Empathy:</strong> I understand everything feels like too much right now.<br>" +
+                         "<strong>Truth:</strong> This feeling will pass. You've survived overwhelming moments before.<br><br>" +
+                         "<strong>Try:</strong> Take 5 deep breaths. Focus on one thing at a time.",
+                         
+            angry: "🔥 <strong>Your anger is valid, but let's channel it safely.</strong><br><br>" +
+                   "<strong>Support:</strong> Your feelings matter, and I'm here with you.<br>" +
+                   "<strong>Empathy:</strong> I understand you're frustrated and things feel unfair.<br>" +
+                   "<strong>Truth:</strong> Acting on anger impulsively often makes things worse.<br><br>" +
+                   "<strong>Try:</strong> Count to 10. Squeeze an ice cube. Go for a walk.",
+                   
+            empty: "🕳️ <strong>The emptiness feels overwhelming, but you're not actually empty.</strong><br><br>" +
+                   "<strong>Support:</strong> You have value and worth, even when you can't feel it.<br>" +
+                   "<strong>Empathy:</strong> I understand how painful and scary this emptiness feels.<br>" +
+                   "<strong>Truth:</strong> This is a symptom, not your reality. You matter.<br><br>" +
+                   "<strong>Try:</strong> Call someone. Listen to music. Do something creative.",
+                   
+            abandoned: "🤗 <strong>You're not alone, even when it feels like everyone leaves.</strong><br><br>" +
+                       "<strong>Support:</strong> I'm here with you right now through this tool.<br>" +
+                       "<strong>Empathy:</strong> I understand how terrifying abandonment feels.<br>" +
+                       "<strong>Truth:</strong> People caring about you doesn't mean they'll never be busy or unavailable.<br><br>" +
+                       "<strong>Try:</strong> Use a transitional object. Text a friend. Remember past support.",
+                       
+            confused: "🧭 <strong>It's okay not to know who you are right now.</strong><br><br>" +
+                      "<strong>Support:</strong> You're valuable regardless of how clear your identity feels.<br>" +
+                      "<strong>Empathy:</strong> I understand how disorienting and scary this confusion is.<br>" +
+                      "<strong>Truth:</strong> Identity develops over time. You don't need to have it all figured out today.<br><br>" +
+                      "<strong>Try:</strong> Write down 3 things you know about yourself. Do an activity you enjoy."
+        };
+        return support[emotion] || "You're doing great by checking in with yourself. 💙";
+    }
+    
+    // Show support content
+    function showSupport(type) {
+        logAction(`Accessed ${type} support`);
+        
+        const content = {
+            abandonment: `
+                <h3>🤗 Coping with Fear of Abandonment</h3>
+                
+                <div class="technique">
+                    <h4>Use Transitional Objects</h4>
+                    <p>Like Princess Diana with her stuffed animal, carry something that represents connection:</p>
+                    <ul>
+                        <li>A photo of Amanda or loved ones</li>
+                        <li>A piece of jewelry or clothing item</li>
+                        <li>Play "your song" when feeling alone</li>
+                        <li>Keep a comforting text message saved</li>
+                    </ul>
+                </div>
+
+                <div class="technique">
+                    <h4>Prepare for Separations</h4>
+                    <p>Don't avoid discussing upcoming separations. Instead:</p>
+                    <ul>
+                        <li>Talk about it beforehand</li>
+                        <li>Plan something positive before the separation</li>
+                        <li>Arrange alternative comfort sources</li>
+                        <li>Set realistic expectations for contact</li>
+                    </ul>
+                </div>
+
+                <div class="technique">
+                    <h4>SET Response for Yourself</h4>
+                    <p><strong>Support:</strong> "I care about maintaining
