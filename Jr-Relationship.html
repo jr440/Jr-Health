@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relationship Dynamics: A Path Forward</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: The SPA is designed as a personal, reflective journey, moving from understanding to action. It's structured in three main thematic sections: 1) 'The Core Dynamics' to visualize the recurring, abstract psychological patterns (like the shame cycle) making them tangible and easier to grasp. 2) 'Key Stressors' to quantify and contextualize external pressures. 3) 'An Interactive Toolkit' to provide actionable, hands-on coping strategies. This structure was chosen over a linear report format to empower the user to explore concepts at their own pace, connect issues with solutions, and engage with the material in a more dynamic, less overwhelming way, fostering insight and a sense of agency. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Cycle of Miscommunication -> Goal: Organize/Change -> Viz: Interactive HTML/CSS diagram -> Interaction: Click to reveal text -> Justification: Visually untangles the complex feedback loop described in the text, making the cause-and-effect pattern clear.
+        - Report Info: Self-Fulfilling Prophecy -> Goal: Organize/Change -> Viz: Interactive HTML/CSS diagram -> Interaction: Click to reveal text -> Justification: Maps out the abstract cognitive-behavioral loop into a clear, step-by-step visual flow.
+        - Report Info: Shame-Rage Cycle -> Goal: Organize/Change -> Viz: Interactive HTML/CSS diagram -> Interaction: Click to reveal text -> Justification: Clearly illustrates the cyclical nature of these intense emotions, helping to identify intervention points.
+        - Report Info: External Stressors -> Goal: Compare/Inform -> Viz: Bar Chart (Chart.js) -> Interaction: Hover for details -> Justification: Provides a quick visual comparison of the impact of different stressors, with hover-details offering context without cluttering the UI.
+        - Report Info: DBT Skills (DEAR MAN, GIVE, etc.) -> Goal: Inform/Organize -> Viz: Interactive Cards (HTML/CSS/JS) -> Interaction: Click to flip/reveal -> Justification: Breaks down complex therapeutic techniques into digestible, easy-to-access micro-lessons, promoting learning and retention. 
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #3D3B38;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 9999px;
+        }
+        .nav-link.active {
+            background-color: #EAE5DF;
+            color: #3D3B38;
+            font-weight: 600;
+        }
+        .nav-link:not(.active):hover {
+            background-color: #F4F1ED;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .card {
+            background-color: #FFFFFF;
+            border: 1px solid #EAE5DF;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .cycle-node {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .cycle-node:hover, .cycle-node.selected {
+            transform: scale(1.05);
+            border-color: #A89C8F;
+        }
+        .arrow {
+            position: absolute;
+            font-size: 2rem;
+            color: #A89C8F;
+            line-height: 1;
+        }
+        .interactive-card {
+            perspective: 1000px;
+        }
+        .interactive-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .interactive-card.flipped .interactive-card-inner {
+            transform: rotateY(180deg);
+        }
+        .interactive-card-front, .interactive-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid #EAE5DF;
+            background-color: #FFFFFF;
+        }
+        .interactive-card-back {
+            transform: rotateY(180deg);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="min-h-screen w-full">
+        <header class="sticky top-0 bg-FDFBF8/80 backdrop-blur-md z-10 border-b border-EAE5DF">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col sm:flex-row items-center justify-between py-4">
+                    <h1 class="text-2xl font-bold text-3D3B38">A Path to Connection</h1>
+                    <nav id="main-nav" class="mt-4 sm:mt-0 flex flex-wrap justify-center space-x-2">
+                        <a data-target="dynamics" class="nav-link active">Core Dynamics</a>
+                        <a data-target="stressors" class="nav-link">Key Stressors</a>
+                        <a data-target="toolkit" class="nav-link">Interactive Toolkit</a>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+            
+            <!-- Section 1: Core Dynamics -->
+            <section id="dynamics" class="content-section active">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold tracking-tight text-3D3B38 sm:text-4xl">Understanding the Core Dynamics</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">This section visualizes the recurring patterns in your relationship. These are not flaws, but cycles that can be understood and changed. Click on each step in the diagrams below to learn more about how these patterns unfold and influence your interactions.</p>
+                </div>
+
+                <div class="space-y-16">
+                    <!-- Cycle of Miscommunication -->
+                    <div class="card rounded-xl p-6 lg:p-8">
+                        <h3 class="text-2xl font-semibold text-center mb-2">The Cycle of Miscommunication</h3>
+                        <p class="text-center text-gray-600 mb-8">A common pattern where an attempt to connect is met with withdrawal, leading to a painful loop.</p>
+                        <div class="relative w-full max-w-2xl mx-auto">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                                <div id="miscommunication-node-1" class="cycle-node text-center p-4 bg-blue-50 border-2 border-blue-200 rounded-lg shadow-sm">
+                                    <h4 class="font-semibold text-blue-800">1. Amanda Seeks Connection</h4>
+                                    <p class="text-sm text-blue-700">Especially during stress, she reaches out for support and reassurance.</p>
+                                </div>
+                                <div id="miscommunication-node-2" class="cycle-node text-center p-4 bg-red-50 border-2 border-red-200 rounded-lg shadow-sm">
+                                    <h4 class="font-semibold text-red-800">2. Fear of Failure is Triggered</h4>
+                                    <p class="text-sm text-red-700">Your inner critic creates negative scenarios about saying the wrong thing.</p>
+                                </div>
+                                <div id="miscommunication-node-3" class="cycle-node text-center p-4 bg-red-50 border-2 border-red-200 rounded-lg shadow-sm">
+                                    <h4 class="font-semibold text-red-800">3. You Withdraw or Defend</h4>
+                                    <p class="text-sm text-red-700">As a protective measure, you put up an "invisible wall" or become defensive.</p>
+                                </div>
+                                <div id="miscommunication-node-4" class="cycle-node text-center p-4 bg-blue-50 border-2 border-blue-200 rounded-lg shadow-sm">
+                                    <h4 class="font-semibold text-blue-800">4. Amanda Feels Hurt & Disconnected</h4>
+                                    <p class="text-sm text-blue-700">Your withdrawal is perceived as a lack of care, reinforcing her feelings of being unsupported.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="miscommunication-details" class="mt-8 p-4 bg-gray-50 rounded-lg text-gray-700 min-h-[100px]">
+                            <p class="italic">Click on a step above to see a detailed explanation.</p>
+                        </div>
+                    </div>
+
+                    <!-- Self-Fulfilling Prophecy -->
+                    <div class="card rounded-xl p-6 lg:p-8">
+                        <h3 class="text-2xl font-semibold text-center mb-2">The Self-Fulfilling Prophecy of Failure</h3>
+                        <p class="text-center text-gray-600 mb-8">A deep-seated fear of inadequacy leads to behaviors that ironically cause the very failure you dread.</p>
+                        <div class="relative w-full max-w-2xl mx-auto">
+                            <div class="flex flex-col space-y-4">
+                               <div id="prophecy-node-1" class="cycle-node text-center p-3 bg-indigo-50 border-2 border-indigo-200 rounded-lg shadow-sm">
+                                    <h4 class="font-semibold text-indigo-800">1. Core Belief: "I am inadequate"</h4>
+                                </div>
+                                <div class="text-center text-2xl text-indigo-400">↓</div>
+                                <div id="prophecy-node-2" class="cycle-node text-center p-3 bg-indigo-50 border-2 border-indigo-200 rounded-lg shadow-sm">
+                                    <h4 class="font-semibold text-indigo-800">2. Trigger: A need for emotional engagement</h4>
+                                </div>
+                                <div class="text-center text-2xl text-indigo-400">↓</div>
+                                <div id="prophecy-node-3" class="cycle-node text-center p-3 bg-indigo-50 border-2 border-indigo-200 rounded-lg shadow-sm">
+                                    <h4 class="font-semibold text-indigo-800">3. Behavior: Withdraw to avoid potential failure</h4>
+                                </div>
+                                <div class="text-center text-2xl text-indigo-400">↓</div>
+                                <div id="prophecy-node-4" class="cycle-node text-center p-3 bg-indigo-50 border-2 border-indigo-200 rounded-lg shadow-sm">
+                                    <h4 class="font-semibold text-indigo-800">4. Outcome: Amanda feels let down</h4>
+                                </div>
+                                <div class="text-center text-2xl text-indigo-400">↓</div>
+                                <div id="prophecy-node-5" class="cycle-node text-center p-3 bg-indigo-50 border-2 border-indigo-200 rounded-lg shadow-sm">
+                                    <h4 class="font-semibold text-indigo-800">5. Reinforcement: The core belief is confirmed</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="prophecy-details" class="mt-8 p-4 bg-gray-50 rounded-lg text-gray-700 min-h-[100px]">
+                            <p class="italic">Click on a step above to see a detailed explanation.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Key Stressors -->
+            <section id="stressors" class="content-section">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold tracking-tight text-3D3B38 sm:text-4xl">The Weight of External Stressors</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">Your relationship doesn't exist in a vacuum. These significant external pressures drain emotional resources and can amplify existing challenges. Hover over the bars to see the specific impacts discussed in your sessions.</p>
+                </div>
+                <div class="card rounded-xl p-6 lg:p-8">
+                    <div class="chart-container">
+                        <canvas id="stressorsChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Interactive Toolkit -->
+            <section id="toolkit" class="content-section">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold tracking-tight text-3D3B38 sm:text-4xl">Your Interactive Toolkit for Growth</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">Understanding is the first step; action is the next. This toolkit provides practical, evidence-based skills to help you communicate more effectively, manage difficult emotions, and build a stronger connection. Click on the cards to learn more.</p>
+                </div>
+
+                <div class="space-y-12">
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-6 text-center">Interpersonal Effectiveness Skills (DBT)</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            
+                            <div class="interactive-card h-64">
+                                <div class="interactive-card-inner">
+                                    <div class="interactive-card-front shadow-lg">
+                                        <h4 class="text-xl font-bold text-teal-700">DEAR MAN</h4>
+                                        <p class="mt-2 text-center text-gray-600">For making requests or saying no effectively.</p>
+                                        <span class="mt-4 text-xs font-semibold text-gray-400">Click to learn</span>
+                                    </div>
+                                    <div class="interactive-card-back shadow-lg">
+                                        <ul class="text-sm space-y-1 text-left">
+                                            <li><strong>D</strong>escribe the situation factually.</li>
+                                            <li><strong>E</strong>xpress your feelings with "I" statements.</li>
+                                            <li><strong>A</strong>ssert your needs clearly.</li>
+                                            <li><strong>R</strong>einforce the positive outcomes.</li>
+                                            <li><strong>M</strong>indful: Stay on topic.</li>
+                                            <li><strong>A</strong>ppear confident.</li>
+                                            <li><strong>N</strong>egotiate a compromise.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="interactive-card h-64">
+                                <div class="interactive-card-inner">
+                                    <div class="interactive-card-front shadow-lg">
+                                        <h4 class="text-xl font-bold text-cyan-700">GIVE</h4>
+                                        <p class="mt-2 text-center text-gray-600">For maintaining the relationship during conversations.</p>
+                                        <span class="mt-4 text-xs font-semibold text-gray-400">Click to learn</span>
+                                    </div>
+                                    <div class="interactive-card-back shadow-lg">
+                                        <ul class="text-sm space-y-2 text-left">
+                                            <li><strong>G</strong>entle: Be respectful, no attacks.</li>
+                                            <li><strong>I</strong>nterested: Listen actively.</li>
+                                            <li><strong>V</strong>alidate their feelings and perspective.</li>
+                                            <li><strong>E</strong>asy Manner: Use a light touch.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="interactive-card h-64">
+                                <div class="interactive-card-inner">
+                                    <div class="interactive-card-front shadow-lg">
+                                        <h4 class="text-xl font-bold text-sky-700">FAST</h4>
+                                        <p class="mt-2 text-center text-gray-600">For maintaining your self-respect.</p>
+                                        <span class="mt-4 text-xs font-semibold text-gray-400">Click to learn</span>
+                                    </div>
+                                    <div class="interactive-card-back shadow-lg">
+                                        <ul class="text-sm space-y-2 text-left">
+                                            <li><strong>F</strong>air: To yourself and others.</li>
+                                            <li><strong>A</strong>pologies: No needless apologizing.</li>
+                                            <li><strong>S</strong>tick to your values.</li>
+                                            <li><strong>T</strong>ruthful: Be honest.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-6 text-center">Distress Tolerance & Self-Soothing</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="card rounded-xl p-6">
+                                <h4 class="text-xl font-semibold text-center mb-4">The "ACCEPTS" Skill</h4>
+                                <p class="text-gray-600 mb-4 text-center">Distraction techniques to get through a crisis without making it worse.</p>
+                                <ul class="space-y-2 text-gray-700">
+                                    <li><strong>A</strong>ctivities: Engage in a neutral hobby.</li>
+                                    <li><strong>C</strong>ontributing: Do something for someone else.</li>
+                                    <li><strong>C</strong>omparisons: Put your situation in perspective.</li>
+                                    <li><strong>E</strong>motions: Create a different feeling (e.g., with music).</li>
+                                    <li><strong>P</strong>ushing Away: Temporarily shelve the problem.</li>
+                                    <li><strong>T</strong>houghts: Force your mind to think of something else.</li>
+                                    <li><strong>S</strong>ensations: Use intense sensations (cold, heat, scent).</li>
+                                </ul>
+                            </div>
+                            <div class="card rounded-xl p-6">
+                                <h4 class="text-xl font-semibold text-center mb-4">Build Your Self-Soothing Kit</h4>
+                                 <p class="text-gray-600 mb-4 text-center">Engage your five senses to calm your mind and body.</p>
+                                <ul class="space-y-2 text-gray-700">
+                                    <li><strong>Sight:</strong> Photos of loved ones, beautiful art, nature.</li>
+                                    <li><strong>Sound:</strong> Calming music, nature sounds, guided meditation.</li>
+                                    <li><strong>Smell:</strong> Scented candle, essential oils, fresh flowers.</li>
+                                    <li><strong>Taste:</strong> A favorite tea, a piece of dark chocolate.</li>
+                                    <li><strong>Touch:</strong> A soft blanket, petting an animal, a warm bath.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.content-section');
+
+            function showSection(targetId) {
+                sections.forEach(section => {
+                    section.classList.toggle('active', section.id === targetId);
+                });
+                navLinks.forEach(link => {
+                    link.classList.toggle('active', link.dataset.target === targetId);
+                });
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showSection(link.dataset.target);
+                });
+            });
+
+            // Interactive Diagrams Logic
+            const miscommunicationNodes = {
+                'miscommunication-node-1': {
+                    title: 'Amanda Seeks Connection',
+                    details: 'When stressed, Amanda naturally reaches out for emotional support, communication, and reassurance. This isn\'t a demand for a solution, but a bid for connection to feel seen and prioritized, especially after difficult events like her daughter\'s hospitalization.'
+                },
+                'miscommunication-node-2': {
+                    title: 'Fear of Failure is Triggered',
+                    details: 'Your internal system perceives this bid for connection as a high-stakes test. The fear of saying or doing the wrong thing becomes overwhelming. Your mind creates negative scenarios, leading to a state of being "afraid to communicate."'
+                },
+                'miscommunication-node-3': {
+                    title: 'You Withdraw or Defend',
+                    details: 'As a coping mechanism to avoid the anticipated failure, you retreat. This can look like putting up an "invisible wall," becoming silent, or getting defensive. It\'s a self-protective action rooted in fear, not a lack of care.'
+                },
+                'miscommunication-node-4': {
+                    title: 'Amanda Feels Hurt & Disconnected',
+                    details: 'Your withdrawal, regardless of its intent, is experienced by Amanda as rejection or a lack of support. This leaves her feeling hurt, alone, and emotionally abandoned, which widens the emotional gap between you and reinforces her frustration.'
+                }
+            };
+
+            const prophecyNodes = {
+                'prophecy-node-1': {
+                    title: 'Core Belief: "I am inadequate"',
+                    details: 'A deep-seated belief, possibly from early life experiences, that you are fundamentally not "good enough" and are destined to fail in important relational moments.'
+                },
+                'prophecy-node-2': {
+                    title: 'Trigger: A need for emotional engagement',
+                    details: 'Any situation that requires you to be emotionally present and supportive for Amanda acts as a trigger for the core belief.'
+                },
+                'prophecy-node-3': {
+                    title: 'Behavior: Withdraw to avoid potential failure',
+                    details: 'To prevent the pain of trying your best and still "failing," you preemptively disengage. It feels safer to "fail from the beginning" by not trying at all.'
+                },
+                'prophecy-node-4': {
+                    title: 'Outcome: Amanda feels let down',
+                    details: 'Your withdrawal directly leads to the outcome you fear most: Amanda feels unsupported and disconnected, confirming her disappointment.'
+                },
+                'prophecy-node-5': {
+                    title: 'Reinforcement: The core belief is confirmed',
+                    details: 'You interpret her disappointment as proof of your inadequacy. This reinforces the original core belief, making the cycle stronger and more likely to repeat in the future.'
+                }
+            };
+            
+            function setupCycleDiagram(nodesData, detailsContainerId, nodesSelector) {
+                const detailsContainer = document.getElementById(detailsContainerId);
+                const nodes = document.querySelectorAll(nodesSelector);
+
+                nodes.forEach(node => {
+                    node.addEventListener('click', () => {
+                        const nodeInfo = nodesData[node.id];
+                        detailsContainer.innerHTML = `<h5 class="font-semibold mb-2">${nodeInfo.title}</h5><p>${nodeInfo.details}</p>`;
+                        
+                        nodes.forEach(n => n.classList.remove('selected'));
+                        node.classList.add('selected');
+                    });
+                });
+            }
+
+            setupCycleDiagram(miscommunicationNodes, 'miscommunication-details', '[id^="miscommunication-node-"]');
+            setupCycleDiagram(prophecyNodes, 'prophecy-details', '[id^="prophecy-node-"]');
+
+
+            // Chart.js for Stressors
+            const stressorsCtx = document.getElementById('stressorsChart');
+            if (stressorsCtx) {
+                const stressorsData = {
+                    labels: ['Parenting a Child with Special Needs', 'Work-Life Imbalance', 'Toxic Family Dynamics'],
+                    datasets: [{
+                        label: 'Impact on Emotional Resources',
+                        data: [90, 80, 65],
+                        backgroundColor: [
+                            'rgba(217, 119, 6, 0.6)',
+                            'rgba(29, 78, 216, 0.6)',
+                            'rgba(190, 24, 93, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(217, 119, 6, 1)',
+                            'rgba(29, 78, 216, 1)',
+                            'rgba(190, 24, 93, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                };
+
+                const tooltips = {
+                    'Parenting a Child with Special Needs': 'The immense emotional toll of managing your daughter\'s health, including surgeries and chronic conditions, leaves little energy for the relationship.',
+                    'Work-Life Imbalance': 'A demanding work schedule, pressure to be a provider, and being a "yes person" leads to burnout, making it hard to be emotionally present.',
+                    'Toxic Family Dynamics': 'Negative interactions and a perceived lack of support from your family create additional emotional turmoil that spills over into your marriage.'
+                };
+
+                new Chart(stressorsCtx, {
+                    type: 'bar',
+                    data: stressorsData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y',
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                max: 100,
+                                grid: {
+                                    color: '#F4F1ED'
+                                }
+                            },
+                             y: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        label += tooltips[context.label];
+                                        return label.match(/.{1,50}/g);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Interactive Cards
+            const interactiveCards = document.querySelectorAll('.interactive-card');
+            interactiveCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    card.classList.toggle('flipped');
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>
